@@ -735,7 +735,7 @@ width:350px;
 
 height:450px;
 
-background:white;
+background:#050505;
 
 border-radius:15px;
 
@@ -753,11 +753,16 @@ font-family:Arial;
 
 .fsai-header{
 
-background:#000;
+background:
+linear-gradient(
+135deg,
+#00e5ff,
+#0066ff
+);
 
 color:white;
 
-padding:15px;
+padding:18px;
 
 font-weight:bold;
 
@@ -813,7 +818,9 @@ display:flex;
 
 padding:10px;
 
-border-top:1px solid #ddd;
+border-top:1px solid #222;
+
+background:#050505;
 
 }
 
@@ -823,10 +830,19 @@ border-top:1px solid #ddd;
 
 flex:1;
 
-padding:10px;
+padding:12px;
+
+background:#111;
+
+color:white;
+
+border:1px solid #333;
+
+border-radius:10px;
+
+outline:none;
 
 }
-
 
 
 #fsai-send{
@@ -1013,6 +1029,48 @@ box-shadow:0 0 0 0 rgba(0,229,255,0);
 
 }
 
+
+/* FSAI ASSISTANT MESSAGE COLORS */
+
+
+.bot-message{
+
+    background:#161616;
+
+    color:#ffffff;
+
+    padding:14px;
+
+    border-radius:14px;
+
+    line-height:1.5;
+
+    border:1px solid #333;
+
+}
+
+
+
+.user-message{
+
+    background:
+    linear-gradient(
+    135deg,
+    #00e5ff,
+    #0066ff
+    );
+
+    color:white;
+
+    padding:14px;
+
+    border-radius:14px;
+
+    line-height:1.5;
+
+}
+
+    
     
 footer{
     margin-top:100px;

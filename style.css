@@ -10,7 +10,36 @@ html {
     scroll-behavior:smooth;
 }
 
+.logo {
+    width: 120px;
+    height: auto;
+    display: block;
+}
 
+.logo-area {
+    display: flex;
+    align-items: center;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 8%;
+}
+
+nav {
+    display: flex;
+    gap: 30px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #111;
+    font-weight: 600;
+}
+
+    
 body {
 
     background:#050505;

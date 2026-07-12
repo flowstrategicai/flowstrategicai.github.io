@@ -1,131 +1,105 @@
-```javascript
-// ======================================
-// FLOW STRATEGIC AI - FLOW AI CHATBOT
-// Make.com Webhook Integration
-// ======================================
+document.addEventListener("DOMContentLoaded", () => {
 
 
-const MAKE_WEBHOOK_URL =
-"https://hook.eu1.make.com/z6v4q85quj2lskggt62p44dmbnaba3rj";
+const chatButton =
+document.createElement("button");
+
+chatButton.id="fsai-chat-button";
+
+chatButton.innerHTML="💬";
 
 
-
-
-// -------------------------------
-// Session Tracking
-// -------------------------------
-
-
-function getSessionId(){
-
-    let session = localStorage.getItem("flow_session_id");
-
-    if(!session){
-
-        session =
-        "session_" +
-        Math.random()
-        .toString(36)
-        .substring(2,12);
-
-        localStorage.setItem(
-            "flow_session_id",
-            session
-        );
-
-    }
-
-    return session;
-
-}
+document.body.appendChild(chatButton);
 
 
 
-function getVisitorId(){
+const chatBox =
+document.createElement("div");
 
-    let visitor =
-    localStorage.getItem("flow_visitor_id");
-
-
-    if(!visitor){
-
-        visitor =
-        "visitor_" +
-        Date.now();
+chatBox.id="fsai-chat-box";
 
 
-        localStorage.setItem(
-            "flow_visitor_id",
-            visitor
-        );
+chatBox.innerHTML=`
 
-    }
+<div class="fsai-header">
 
+${SITE_CONFIG.chatbot.botName}
 
-    return visitor;
+<span id="fsai-close">×</span>
 
-}
+</div>
 
 
+<div id="fsai-messages">
+
+<p class="bot-message">
+
+${SITE_CONFIG.chatbot.welcomeMessage}
+
+</p>
+
+</div>
 
 
+<div class="fsai-input-area">
 
-// -------------------------------
-// Chat Open / Close
-// -------------------------------
-
-
-function openChat(){
-
-    document
-    .getElementById("chat-widget")
-    .style.display="block";
-
-}
+<input 
+id="fsai-input"
+placeholder="Ask your question..."
+>
 
 
+<button id="fsai-send">
+Send
+</button>
 
-function closeChat(){
+</div>
 
-    document
-    .getElementById("chat-widget")
-    .style.display="none";
+`;
 
-}
+
+document.body.appendChild(chatBox);
 
 
 
+chatButton.onclick=()=>{
+
+chatBox.style.display="flex";
+
+};
 
 
 
-// -------------------------------
-// Send Message
-// -------------------------------
+document
+.getElementById("fsai-close")
+.onclick=()=>{
+
+chatBox.style.display="none";
+
+};
+
+
 
 
 async function sendMessage(){
 
 
 const input =
-document.getElementById(
-"user-message"
-);
-
+document.getElementById("fsai-input");
 
 
 const message =
 input.value.trim();
 
 
-
-if(!message){
-    return;
-}
+if(!message)return;
 
 
 
-
-addUserMessage(message);
+addMessage(
+message,
+"user-message"
+);
 
 
 
@@ -133,84 +107,56 @@ input.value="";
 
 
 
-const typing =
-addAIMessage(
-"⏳ Flow AI is thinking..."
+addMessage(
+"Thinking...",
+"bot-message"
 );
 
 
 
-
-const payload = {
-
-
-channel:
-"website_chat",
-
-
-session_id:
-getSessionId(),
-
-
-visitor_id:
-getVisitorId(),
-
-
-
-name:
-"",
-
-
-email:
-"",
-
-
-
-message:
-message,
-
-
-page_url:
-window.location.href,
-
-
-timestamp:
-new Date()
-.toISOString()
-
-
-};
-
-
-
-
-
-try {
+try{
 
 
 const response =
 await fetch(
-MAKE_WEBHOOK_URL,
+SITE_CONFIG.chatbot.webhookURL,
 {
 
 method:"POST",
 
-
-headers:{
-
-"Content-Type":
-"application/json"
-
+headers:
+{
+"Content-Type":"application/json"
 },
 
 
 body:
-JSON.stringify(payload)
+JSON.stringify({
+
+channel:"website_chat",
+
+session_id:
+"session_"+Date.now(),
+
+visitor_id:
+"visitor_"+Date.now(),
+
+name:"Website Visitor",
+
+email:"",
+
+message:message,
+
+page_url:
+window.location.href,
+
+timestamp:
+new Date().toISOString()
+
+})
 
 
-}
-);
-
+});
 
 
 
@@ -219,52 +165,29 @@ await response.json();
 
 
 
-
-
-typing.remove();
-
+removeThinking();
 
 
 
-
-if(data.reply){
-
-
-addAIMessage(
-data.reply
+addMessage(
+data.reply,
+"bot-message"
 );
 
 
-}
-
-else{
-
-
-addAIMessage(
-"Sorry, I could not process that request."
-);
-
 
 }
-
-
-
-}
-
-
 
 catch(error){
 
 
-typing.remove();
+removeThinking();
 
 
-addAIMessage(
-"Connection error. Please try again."
+addMessage(
+"Sorry, I could not connect right now. Please email us at flowstrategicai@gmail.com",
+"bot-message"
 );
-
-
-console.error(error);
 
 
 }
@@ -276,141 +199,67 @@ console.error(error);
 
 
 
+function addMessage(text,type){
+
+const messages =
+document.getElementById("fsai-messages");
 
 
+const div =
+document.createElement("p");
 
 
-// -------------------------------
-// Display Messages
-// -------------------------------
+div.className=type;
+
+div.innerText=text;
 
 
-function addUserMessage(text){
+messages.appendChild(div);
 
 
-const container =
-document.getElementById(
-"chat-messages"
-);
-
-
-
-const message =
-document.createElement(
-"div"
-);
-
-
-
-message.className =
-"ai-message";
-
-
-message.style.background =
-"#003344";
-
-
-message.style.marginBottom =
-"10px";
-
-
-
-message.innerHTML =
-"You:<br>" + text;
-
-
-
-container.appendChild(
-message
-);
-
-
-
-container.scrollTop =
-container.scrollHeight;
-
+messages.scrollTop =
+messages.scrollHeight;
 
 
 }
 
 
 
+function removeThinking(){
+
+const thinking =
+document.querySelector(".bot-message:last-child");
 
 
+if(thinking &&
+thinking.innerText==="Thinking...")
+{
 
+thinking.remove();
 
-function addAIMessage(text){
-
-
-const container =
-document.getElementById(
-"chat-messages"
-);
-
-
-
-const message =
-document.createElement(
-"div"
-);
-
-
-
-message.className =
-"ai-message";
-
-
-
-message.style.marginBottom =
-"10px";
-
-
-
-message.innerHTML =
-"Flow AI:<br>" + text;
-
-
-
-container.appendChild(
-message
-);
-
-
-
-container.scrollTop =
-container.scrollHeight;
-
-
-
-return message;
-
-
+}
 
 }
 
 
 
-
-
-
-
-// Allow Enter key sending
 
 document
+.getElementById("fsai-send")
+.onclick=sendMessage;
+
+
+
+document
+.getElementById("fsai-input")
 .addEventListener(
 "keypress",
-function(e){
+(e)=>{
 
-if(
-e.key === "Enter"
-&&
-document.activeElement.id === "user-message"
-){
-
+if(e.key==="Enter")
 sendMessage();
 
-}
+});
 
 
 });
-```

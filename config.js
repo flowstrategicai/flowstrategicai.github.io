@@ -1,118 +1,39 @@
-/*
-========================================================
+const SITE_CONFIG = {
 
-FLOW STRATEGIC AI WEBSITE CONFIGURATION
-
-This is the ONLY file you need to edit when
-customizing this website.
-
-You do NOT need to edit index.html.
-
-========================================================
-
-QUICK START
-
-1. Replace company information
-2. Replace webhook URL
-3. Replace social media links
-4. Replace YouTube video IDs
-5. Commit changes to GitHub
-
-========================================================
-*/
-
-const CONFIG = {
-
-    // ========================================
-    // COMPANY INFORMATION
-    // ========================================
-
-    companyName: "Flow Strategic AI",
-
-    shortName: "FSAI",
-
-    tagline: "Autonomous AI Systems That Generate Leads, Automate Operations, And Scale Businesses.",
-
-    email: "flowstrategicai@gmail.com",
-
-    website: "https://flowstrategicai.github.io",
-
-    logo: "assets/logo.png",
-
-    // ========================================
-    // AI CHATBOT
-    // ========================================
+    brandName: "Flow Strategic AI",
 
     chatbot: {
-
         enabled: true,
 
-        name: "Flow Strategic AI",
+        webhookURL:
+        "https://hook.eu1.make.com/z6v4q85quj2lskggt62p44dmbnaba3rj",
+
+        botName: "Flow Strategic AI",
 
         welcomeMessage:
-            "Hi 👋 I'm Flow Strategic AI. Ask me anything about our AI systems, automations, or services.",
-
-        webhook:
-            "https://hook.eu1.make.com/z6v4q85quj2lskggt62p44dmbnaba3rj"
-
+        "Hi 👋 I'm Flow Strategic AI assistant. Ask me anything about our AI automation systems."
     },
 
-    // ========================================
-    // SOCIAL LINKS
-    // ========================================
 
-    socials: {
+    contact: {
 
-        youtube:
-            "https://www.youtube.com/@flowstrategicAI",
-
-        linkedin:
-            "https://linkedin.com/flowstrategicai",
-
-        facebook:
-            "https://facebook.com/flowstrategicai",
-
-        twitter:
-            "https://x.com/flowstrategicai",
+        email:
+        "flowstrategicai@gmail.com",
 
         whatsapp:
-            "254723025978"
+        "https://wa.me/254723025978",
 
-    },
+        linkedin:
+        "https://linkedin.com/flowstrategicai",
 
-    // ========================================
-    // YOUTUBE DEMOS
-    // Replace only the ID
-    // ========================================
+        twitter:
+        "https://x.com/flowstrategicai",
 
-    demos: {
+        facebook:
+        "https://facebook.com/flowstrategicai",
 
-        leadGeneration: "kKB_HY7aGY0",
-
-        leadQualification: "YiVzjhvPb1c",
-
-        contentEngine: "szXMjJKdp0g",
-
-        youtubeDistribution: "D0PS_5BHlME"
-
-    },
-
-    // ========================================
-    // WEBSITE COLORS
-    // ========================================
-
-    colors: {
-
-        background: "#0B0B0F",
-
-        card: "#17171C",
-
-        accent: "#4F7CFF",
-
-        text: "#FFFFFF",
-
-        secondaryText: "#A8A8B3"
-
+        youtube:
+        "https://youtube.com/@flowstrategicAI"
     }
 
 };

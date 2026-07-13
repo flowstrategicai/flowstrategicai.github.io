@@ -148,6 +148,7 @@ function hideTyping(){ const t = document.getElementById("typing"); if(t) t.remo
 
 async function sendMessage(){
   const input = document.getElementById("fsai-input");
+  const sendBtn = document.getElementById("fsai-send");
   const msg = input.value.trim();
   if(!msg) return;
 
@@ -156,31 +157,67 @@ async function sendMessage(){
 
   addMessage(msg, "user-message");
   input.value = "";
+  input.disabled = true;
+  if(sendBtn){ sendBtn.disabled = true; sendBtn.textContent = "..."; }
   showTyping();
+
+  const payload = {
+    channel: "website_chat",
+    session_id: SESSION_ID,
+    visitor_id: VISITOR_ID,
+    name: "",
+    email: "",
+    message: msg,
+    page_url: window.location.href,
+    user_agent: navigator.userAgent,
+    referrer: document.referrer,
+    timestamp: new Date().toISOString()
+  };
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 90000);
 
   try {
     const res = await fetch(CONFIG.chatbot.webhook, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        channel: "website_chat",
-        session_id: SESSION_ID,
-        visitor_id: VISITOR_ID,
-        name: "",
-        email: "",
-        message: msg,
-        page_url: window.location.href,
-        user_agent: navigator.userAgent,
-        referrer: document.referrer,
-        timestamp: new Date().toISOString()
-      })
+      body: JSON.stringify(payload),
+      signal: controller.signal
     });
+    clearTimeout(timeout);
+
+    const raw = await res.text();               // 1. always read text first
+    if (!res.ok) throw new Error(`Webhook ${res.status}: ${raw}`);
+
+    let reply = "";
+    try {                                        // 2. try clean JSON
+      const data = JSON.parse(raw);
+      reply = data.reply || data.response || data.message || data.text || "";
+    } catch (e) {                                // 3. salvage malformed JSON
+      const m = raw.match(/"reply"\s*:\s*"([\s\S]*?)"\s*[,}]/);
+      reply = m ? m[1].replace(/\\"/g,'"').replace(/\\n/g,"\n").replace(/\\r/g,"\r").replace(/\\\\/g,"\\")
+                : raw;                           // 4. fall back to plain text
+    }
+
+    reply = String(reply || "").trim();
+    if (!reply) reply = "Thanks — I received your message but couldn't generate a full reply. Please try again.";
 
     hideTyping();
-    const data = await res.json();
-    addMessage(data.reply || "Thanks! We'll get back to you shortly.", "bot-message");
+    addMessage(reply, "bot-message");
+
   } catch(err){
+    clearTimeout(timeout);
     hideTyping();
-    addMessage("I'm having trouble connecting right now. Please email " + CONFIG.email, "bot-message");
+    console.error("FSAI chat error:", err);
+    addMessage(
+      err.name === "AbortError"
+        ? "The assistant is taking longer than usual. Please try again, or email " + CONFIG.email + "."
+        : "I'm having trouble connecting right now. Please email " + CONFIG.email + ".",
+      "bot-message"
+    );
+  } finally {
+    input.disabled = false;
+    if(sendBtn){ sendBtn.disabled = false; sendBtn.textContent = "Send"; }
+    input.focus();
   }
 }

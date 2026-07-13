@@ -76,7 +76,12 @@ function initReveal(){
 }
 
 /* ========= CHATBOT ========= */
-let SESSION_ID = "session_" + Date.now();
+let SESSION_ID = localStorage.getItem("fsai_session_id");
+
+if (!SESSION_ID) {
+    SESSION_ID = "session_" + Date.now();
+    localStorage.setItem("fsai_session_id", SESSION_ID);
+}
 let VISITOR_ID = localStorage.getItem("fsai_visitor") || "visitor_" + Date.now();
 localStorage.setItem("fsai_visitor", VISITOR_ID);
 
@@ -177,7 +182,20 @@ async function sendMessage(){
     });
 
     hideTyping();
-    const data = await res.json();
+    const contentType = res.headers.get("content-type") || "";
+
+let data;
+
+if (contentType.includes("application/json")) {
+    data = await res.json();
+} else {
+    data = { reply: await res.text() };
+}
+
+if (!res.ok) {
+    throw new Error(`Webhook error: ${res.status}`);
+}
+    
     addMessage(data.reply || "Thanks! We'll get back to you shortly.", "bot-message");
   } catch(err){
     hideTyping();

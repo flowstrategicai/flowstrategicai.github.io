@@ -291,3 +291,34 @@ footer{border-top:1px solid var(--border);background:var(--bg-soft);padding:50px
   .hero-buttons{flex-direction:column}
   .btn-primary,.btn-secondary{width:100%}
 }
+
+
+/* ===== SPA / PROJECT / CATEGORY PAGES ===== */
+.card{display:flex;flex-direction:column;cursor:pointer}
+.card-cta{margin-top:18px;color:var(--accent);font-weight:600;font-size:.92rem}
+
+.project-page{max-width:1000px;margin:0 auto;padding:140px 6% 60px}
+.back-link{display:inline-block;color:var(--accent);margin-bottom:26px;font-weight:600;cursor:pointer}
+.back-link:hover{text-decoration:underline}
+.project-header h1{font-size:clamp(2rem,5vw,3.4rem);font-weight:900;line-height:1.1;margin:18px 0;
+  background:linear-gradient(180deg,#fff,#b9c2ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.project-subtitle{color:var(--muted);font-size:1.15rem;max-width:760px;margin-bottom:22px}
+.project-content h2{font-size:1.6rem;margin:46px 0 20px;color:#fff;border-bottom:1px solid var(--border);padding-bottom:12px}
+
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.feature-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px;color:#c8c8d4;transition:.25s}
+.feature-item:hover{border-color:var(--accent);transform:translateY(-3px)}
+
+.module-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.module-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px;transition:.3s}
+.module-card:hover{border-color:var(--accent);transform:translateY(-4px)}
+.module-num{display:inline-block;font-size:.85rem;font-weight:700;color:var(--accent);border:1px solid var(--accent);
+  border-radius:50%;width:36px;height:36px;line-height:34px;text-align:center;margin-bottom:14px}
+.module-card h4{font-size:1.2rem;margin-bottom:8px}
+.module-card p{color:var(--muted);font-size:.95rem}
+
+.outcome-grid{display:flex;flex-wrap:wrap;gap:12px}
+.outcome-pill{background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.25);color:#7fe9ff;padding:12px 22px;border-radius:30px;font-weight:500}
+
+.card-live{margin-top:14px;font-size:.85rem;color:var(--accent);font-weight:600;display:flex;align-items:center;gap:6px}
+.btn-secondary{margin-left:10px}

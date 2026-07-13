@@ -55,10 +55,7 @@ function getOrCreateId(key, prefix) {
 
 const CFG = window.CONFIG;
 
-function createChatbot() {
-    window.CONFIG = {
-   ...
-};
+if (typeof CONFIG === "undefined") return;
 
     const chatButton = document.createElement("button");
     chatButton.id = "fsai-chat-button";

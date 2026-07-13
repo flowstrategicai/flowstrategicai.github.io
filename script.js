@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { i:"💼", l:"LinkedIn", v:"Connect", h:c.linkedin },
     { i:"𝕏", l:"Twitter/X", v:"Follow", h:c.twitter },
     { i:"📘", l:"Facebook", v:"Follow", h:c.facebook }
+    { i:"🅾", l:"Instagram", v:"Follow", h:c.instagram }
   ];
   const cg = document.getElementById("contact-grid");
   contactData.forEach(x => {

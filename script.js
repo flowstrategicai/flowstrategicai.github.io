@@ -153,8 +153,105 @@ function hideTyping(){ const t = document.getElementById("typing"); if(t) t.remo
 
 async function sendMessage(){
   const input = document.getElementById("fsai-input");
+  const sendBtn = document.getElementById("fsai-send");
   const msg = input.value.trim();
+
   if(!msg) return;
+
+  const sug = document.getElementById("fsai-suggestions");
+  if(sug) sug.style.display = "none";
+
+  addMessage(msg, "user-message");
+  input.value = "";
+  input.disabled = true;
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Sending...";
+  showTyping();
+
+  const payload = {
+    channel: "website_chat",
+    session_id: SESSION_ID,
+    visitor_id: VISITOR_ID,
+    name: "",
+    email: "",
+    message: msg,
+    page_url: window.location.href,
+    user_agent: navigator.userAgent,
+    referrer: document.referrer,
+    timestamp: new Date().toISOString()
+  };
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 90000);
+
+  try {
+    const res = await fetch(CONFIG.chatbot.webhook, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload),
+      signal: controller.signal
+    });
+
+    clearTimeout(timeout);
+
+    const raw = await res.text();
+
+    if (!res.ok) {
+      throw new Error(`Webhook error ${res.status}: ${raw}`);
+    }
+
+    let reply = "";
+
+    // If Make returns valid JSON, support it.
+    try {
+      const data = JSON.parse(raw);
+      reply =
+        data.reply ||
+        data.response ||
+        data.message ||
+        data.text ||
+        "";
+    } catch (parseError) {
+      // If Make returns plain text, use it directly.
+      reply = raw;
+    }
+
+    reply = String(reply || "").trim();
+
+    if (!reply) {
+      reply = "Thanks — I received your message, but I could not generate a complete response. Please try again.";
+    }
+
+    hideTyping();
+    addMessage(reply, "bot-message");
+
+  } catch(err){
+    clearTimeout(timeout);
+    hideTyping();
+
+    console.error("FSAI chatbot error:", err);
+
+    if (err.name === "AbortError") {
+      addMessage(
+        "The AI assistant is taking longer than expected. Please try again in a moment, or email " + CONFIG.email + ".",
+        "bot-message"
+      );
+    } else {
+      addMessage(
+        "I'm having trouble connecting right now. Please email " + CONFIG.email + ".",
+        "bot-message"
+      );
+    }
+  } finally {
+    input.disabled = false;
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Send";
+    input.focus();
+  }
+}
+
 
   const sug = document.getElementById("fsai-suggestions");
   if(sug) sug.style.display = "none";

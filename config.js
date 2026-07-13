@@ -36,7 +36,7 @@ const CONFIG = {
     enabled: true,
     name: "FSAI Assistant",
     welcomeMessage: "👋 Welcome to Flow Strategic AI.\n\nI'm the FSAI Assistant. I can answer questions about our AI automation systems, recommend the right solution for your business, and help you get started with your project.\n\nWhat would you like to automate?",
-    webhook: "https://hook.eu1.make.com/1gbvkovboen1vv62mn5ajztnvvywtv6p",
+    webhook: "https://hook.eu1.make.com/3yzv81aurdt9on9uclfelz382cfu4obb",
     suggestions: [
       "AI Lead Generation",
       "Customer Support AI",

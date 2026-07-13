@@ -48,7 +48,7 @@ const CONFIG = {
             "👋 Welcome to Flow Strategic AI.\n\nI'm the FSAI Assistant. I can answer questions about our AI automation systems, recommend the right solution for your business, and help you get started with your project.",
 
         webhook:
-            "https://hook.eu1.make.com/z6v4q85quj2lskggt62p44dmbnaba3rj",
+            "https://hook.eu1.make.com/1gbvkovboen1vv62mn5ajztnvvywtv6p",
 
         fallbackMessage:
             "Sorry, I could not connect right now. Please email us at flowstrategicai@gmail.com or message us on WhatsApp."

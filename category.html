@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Category | Flow Strategic AI</title>
+  <meta name="description" content="Flow Strategic AI automation category.">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header id="header">
+  <a href="index.html" class="logo-area">
+    <img src="assets/logo.png" class="logo" alt="Flow Strategic AI">
+    <span class="logo-text">Flow Strategic AI</span>
+  </a>
+  <nav id="nav">
+    <a href="index.html#systems">Systems</a>
+    <a href="index.html#demos">Demos</a>
+    <a href="index.html#how">Process</a>
+    <a href="index.html#contact" class="nav-cta">Contact</a>
+  </nav>
+  <button id="menu-toggle" aria-label="Menu">☰</button>
+</header>
+
+<main class="section" id="category-root"></main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src="assets/logo.png" alt="FSAI" class="footer-logo">
+      <p>Autonomous AI systems for lead generation, support, CRM & content.</p>
+    </div>
+    <div class="footer-copy">© <span id="year"></span> Flow Strategic AI. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="config.js"></script>
+<script src="projects.js"></script>
+<script src="script.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const catId = params.get("category");
+
+  const category = CATEGORIES.find(c => c.id === catId);
+  const projects = PROJECTS.filter(p => slugifyCategory(p.category) === catId);
+  const root = document.getElementById("category-root");
+
+  if (!category) {
+    root.innerHTML = `
+      <div class="section-head">
+        <span class="eyebrow">Category Not Found</span>
+        <h2>That category could not be found.</h2>
+        <p class="section-lead"><a href="index.html#systems">Return to portfolio</a></p>
+      </div>`;
+    return;
+  }
+
+  document.title = category.name + " | Flow Strategic AI";
+
+  root.innerHTML = `
+    <div class="section-head">
+      <span class="eyebrow">Category</span>
+      <h2>${category.name}</h2>
+      <p class="section-lead">${category.description}</p>
+    </div>
+
+    <div class="cards">
+      ${projects.map(p => `
+        <a class="card" href="project.html?id=${p.id}">
+          <div class="card-top">
+            <span class="card-icon">${p.icon}</span>
+            <span class="card-rating">${p.rating}</span>
+          </div>
+          <h3>${p.title}</h3>
+          <p>${p.summary}</p>
+          <ul>
+            ${p.outcome.slice(0, 3).map(x => `<li>${x}</li>`).join("")}
+          </ul>
+          <div class="card-tags">
+            ${p.stack.slice(0, 4).map(x => `<span>${x}</span>`).join("")}
+          </div>
+        </a>
+      `).join("")}
+    </div>
+  `;
+});
+</script>
+
+</body>
+</html>

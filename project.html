@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project | Flow Strategic AI</title>
+  <meta name="description" content="Flow Strategic AI project case study.">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header id="header">
+  <a href="index.html" class="logo-area">
+    <img src="assets/logo.png" class="logo" alt="Flow Strategic AI">
+    <span class="logo-text">Flow Strategic AI</span>
+  </a>
+  <nav id="nav">
+    <a href="index.html#systems">Systems</a>
+    <a href="index.html#demos">Demos</a>
+    <a href="index.html#how">Process</a>
+    <a href="index.html#contact" class="nav-cta">Contact</a>
+  </nav>
+  <button id="menu-toggle" aria-label="Menu">☰</button>
+</header>
+
+<main class="section project-page" id="project-root"></main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src="assets/logo.png" alt="FSAI" class="footer-logo">
+      <p>Autonomous AI systems for lead generation, support, CRM & content.</p>
+    </div>
+    <div class="footer-copy">© <span id="year"></span> Flow Strategic AI. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="config.js"></script>
+<script src="projects.js"></script>
+<script src="script.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+  const project = PROJECTS.find(p => p.id === id);
+  const root = document.getElementById("project-root");
+
+  if (!project) {
+    root.innerHTML = `
+      <div class="section-head">
+        <span class="eyebrow">Project Not Found</span>
+        <h2>That project could not be found.</h2>
+        <p class="section-lead"><a href="index.html#systems">Return to portfolio</a></p>
+      </div>`;
+    return;
+  }
+
+  document.title = project.title + " | Flow Strategic AI";
+
+  root.innerHTML = `
+    <div class="section-head">
+      <span class="eyebrow">${project.category}</span>
+      <h2>${project.icon} ${project.title}</h2>
+      <p class="section-lead">${project.pageHeadline}</p>
+    </div>
+
+    <div class="case-grid">
+      <div class="case-main">
+        <div class="case-card">
+          <h3>Overview</h3>
+          <p>${project.summary}</p>
+        </div>
+
+        <div class="case-card">
+          <h3>Business Impact</h3>
+          <p>${project.businessImpact}</p>
+        </div>
+
+        <div class="case-card">
+          <h3>Core Features</h3>
+          <ul>
+            ${project.features.map(x => `<li>${x}</li>`).join("")}
+          </ul>
+        </div>
+
+        <div class="case-card">
+          <h3>Outcomes</h3>
+          <ul>
+            ${project.outcome.map(x => `<li>${x}</li>`).join("")}
+          </ul>
+        </div>
+
+        ${project.demo ? `
+        <div class="case-card">
+          <h3>Demo</h3>
+          <div class="video-wrap">
+            <iframe src="${project.demo}" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </div>` : ""}
+      </div>
+
+      <aside class="case-side">
+        <div class="case-card">
+          <h3>Stack</h3>
+          <div class="card-tags">
+            ${project.stack.map(x => `<span>${x}</span>`).join("")}
+          </div>
+        </div>
+
+        <div class="case-card">
+          <h3>Category</h3>
+          <p><a href="category.html?category=${slugifyCategory(project.category)}">${project.category}</a></p>
+        </div>
+
+        <div class="case-card">
+          <h3>Build Something Similar</h3>
+          <p>Want a system like this for your business?</p>
+          <a href="mailto:${CONFIG.email}" class="btn-primary case-btn">Email Flow Strategic AI</a>
+          <button class="btn-secondary case-btn" onclick="openChat()">Chat With Assistant</button>
+        </div>
+      </aside>
+    </div>
+  `;
+});
+</script>
+
+</body>
+</html>

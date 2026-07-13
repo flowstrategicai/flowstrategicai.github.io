@@ -4,246 +4,36 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Flow Strategic AI | Autonomous AI Automation Systems</title>
-  <meta name="description" content="Flow Strategic AI builds autonomous AI agents, Make.com automation systems, AI lead generation engines, CRM automation, and customer support AI systems.">
-
-  <!-- Favicon -->
+  <meta name="description" content="Flow Strategic AI builds autonomous AI agents, Make.com automations, AI lead generation, CRM automation, and customer support AI systems.">
   <link rel="icon" type="image/png" href="assets/logo.png">
-
-  <!-- Open Graph -->
   <meta property="og:title" content="Flow Strategic AI | Autonomous AI Systems">
-  <meta property="og:description" content="AI agents and Make.com workflows that generate leads, automate operations, and scale businesses.">
-  <meta property="og:type" content="website">
   <meta property="og:image" content="assets/logo.png">
-
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <!-- ===== HEADER ===== -->
   <header id="header">
-    <a href="#" class="logo-area">
-      <img src="assets/logo.png" class="logo" alt="Flow Strategic AI">
+    <a href="#/" class="logo-area">
+      <img src="assets/logo.png" class="logo" alt="Flow Strategic AI" onerror="this.style.display='none'">
       <span class="logo-text">Flow Strategic AI</span>
     </a>
     <nav id="nav">
-      <a href="#systems">Systems</a>
-      <a href="#demos">Demos</a>
-      <a href="#how">Process</a>
-      <a href="#tech">Stack</a>
-      <a href="#contact" class="nav-cta">Contact</a>
+      <a href="#/#systems">Systems</a>
+      <a href="#/#how">Architecture</a>
+      <a href="#/#tech">Stack</a>
+      <a href="#/#contact" class="nav-cta">Contact</a>
     </nav>
     <button id="menu-toggle" aria-label="Menu">☰</button>
   </header>
 
-  <!-- ===== HERO ===== -->
-  <section class="hero">
-    <div class="hero-glow"></div>
-    <div class="hero-content">
-      <div class="hero-badge">⚡ Autonomous AI Automation Studio</div>
-      <h1 id="hero-title"></h1>
-      <p id="hero-subtitle"></p>
-      <div class="hero-buttons">
-        <a href="#systems" class="btn-primary">Explore AI Systems</a>
-        <button class="btn-secondary" onclick="openChat()">💬 Chat with FSAI Assistant</button>
-      </div>
-      <div class="hero-pills">
-        <span>Sales AI</span>
-        <span>Lead Generation</span>
-        <span>Customer Support</span>
-        <span>CRM Automation</span>
-        <span>Content Systems</span>
-      </div>
-    </div>
-  </section>
+  <main id="app-root"></main>
 
-  <!-- ===== STATS ===== -->
-  <section class="stats" id="stats"></section>
-
-  <!-- ===== ABOUT ===== -->
-  <section class="section" id="about">
-    <h2>About Flow Strategic AI</h2>
-    <p class="section-lead" id="about-text"></p>
-  </section>
-
-  <!-- ===== SYSTEMS ===== -->
-  <section class="section" id="systems">
-    <div class="section-head">
-      <span class="eyebrow">Production-Ready AI Systems</span>
-      <h2>Featured AI Systems</h2>
-      <p class="section-lead">Autonomous systems that combine reasoning agents, workflow orchestration, and business logic — built to deliver measurable outcomes.</p>
-    </div>
-
-    <div class="cards">
-
-      <div class="card" data-cat="Sales AI">
-        <div class="card-top">
-          <span class="card-icon">🚀</span>
-          <span class="card-rating">★★★★★</span>
-        </div>
-        <h3>Autonomous B2B Lead Generation Engine</h3>
-        <p>A multi-agent AI sales system that discovers companies, identifies buying signals, finds decision-makers, creates personalized outreach, and manages CRM tracking automatically.</p>
-        <ul>
-          <li>LinkedIn + Meta ad signal discovery</li>
-          <li>AI prospect qualification & scoring</li>
-          <li>Founder email enrichment (Apollo, Exa)</li>
-          <li>AI-personalized cold outreach</li>
-          <li>Automated CRM + Gmail drafts</li>
-        </ul>
-        <div class="card-tags"><span>Make.com</span><span>GPT-5.5</span><span>Apify</span><span>Apollo</span></div>
-      </div>
-
-      <div class="card" data-cat="Revenue Intelligence">
-        <div class="card-top">
-          <span class="card-icon">🌐</span>
-          <span class="card-rating">★★★★★</span>
-        </div>
-        <h3>Hybrid Signal-to-Offer Revenue Engine</h3>
-        <p>An autonomous revenue-intelligence system that detects business problems online, scores buying-window intent, generates custom offers, and alerts your team in real time.</p>
-        <ul>
-          <li>Public intent-signal monitoring</li>
-          <li>Weighted AI opportunity scoring</li>
-          <li>Automated offer & landing copy generation</li>
-          <li>HTML executive email alerts</li>
-        </ul>
-        <div class="card-tags"><span>Make.com</span><span>Tavily</span><span>Exa</span><span>Sheets</span></div>
-      </div>
-
-      <div class="card" data-cat="Customer Experience">
-        <div class="card-top">
-          <span class="card-icon">🤖</span>
-          <span class="card-rating">★★★★☆</span>
-        </div>
-        <h3>AI Customer Support & FAQ Automation</h3>
-        <p>A premium AI support assistant that answers questions, searches a knowledge base, remembers conversations, qualifies visitors, and escalates important requests to humans.</p>
-        <ul>
-          <li>AI FAQ knowledge base search</li>
-          <li>Conversation memory & context</li>
-          <li>HOT / WARM / COLD lead qualification</li>
-          <li>CRM logging + human escalation</li>
-        </ul>
-        <div class="card-tags"><span>Make.com</span><span>AI Agent</span><span>Gmail</span><span>Sheets</span></div>
-        <div class="card-live">● Live on this site — try the chat widget</div>
-      </div>
-
-      <div class="card" data-cat="Sales Operations">
-        <div class="card-top">
-          <span class="card-icon">🧠</span>
-          <span class="card-rating">★★★★☆</span>
-        </div>
-        <h3>AI Lead Qualification System</h3>
-        <p>An intelligent agent that captures leads, analyzes responses, scores prospects, and automatically prioritizes sales opportunities with personalized replies.</p>
-        <ul>
-          <li>AI lead scoring engine</li>
-          <li>HOT / WARM / COLD classification</li>
-          <li>Automated personalized email replies</li>
-          <li>Google Sheets CRM logging</li>
-        </ul>
-        <div class="card-tags"><span>Make.com</span><span>Gemini</span><span>Forms</span><span>Gmail</span></div>
-      </div>
-
-      <div class="card" data-cat="Marketing AI">
-        <div class="card-top">
-          <span class="card-icon">📢</span>
-          <span class="card-rating">★★★★☆</span>
-        </div>
-        <h3>Autonomous AI Content Engine</h3>
-        <p>A complete content automation system that researches trends, writes AI content, generates visuals, and distributes posts across multiple platforms automatically.</p>
-        <ul>
-          <li>Trend research & signal mining</li>
-          <li>Multi-platform AI copywriting</li>
-          <li>AI image prompt generation</li>
-          <li>Auto-scheduling & publishing</li>
-        </ul>
-        <div class="card-tags"><span>Make.com</span><span>GPT</span><span>DALL·E</span><span>Social APIs</span></div>
-      </div>
-
-      <div class="card" data-cat="Content Automation">
-        <div class="card-top">
-          <span class="card-icon">🔁</span>
-          <span class="card-rating">★★★☆☆</span>
-        </div>
-        <h3>YouTube → LinkedIn Distribution</h3>
-        <p>Transforms a single long-form video into multiple professional LinkedIn posts automatically using AI transcript analysis.</p>
-        <ul>
-          <li>Automatic transcript extraction</li>
-          <li>Multiple AI post angles per video</li>
-          <li>Content database storage</li>
-          <li>Scheduled distribution</li>
-        </ul>
-        <div class="card-tags"><span>Make.com</span><span>AI</span><span>YouTube</span><span>LinkedIn</span></div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ===== DEMOS ===== -->
-  <section class="section" id="demos">
-    <div class="section-head">
-      <span class="eyebrow">Live Demonstrations</span>
-      <h2>See The Systems In Action</h2>
-    </div>
-    <div class="videos" id="videos"></div>
-  </section>
-
-  <!-- ===== PROCESS ===== -->
-  <section class="section" id="how">
-    <div class="section-head">
-      <span class="eyebrow">Architecture</span>
-      <h2>How The Systems Work</h2>
-    </div>
-    <div class="process">
-      <div class="process-step"><span class="step-num">01</span><h4>Trigger</h4><p>Webhook, form, schedule, or signal event</p></div>
-      <div class="process-arrow">→</div>
-      <div class="process-step"><span class="step-num">02</span><h4>AI Reasoning</h4><p>Agent evaluates, scores & decides using tools</p></div>
-      <div class="process-arrow">→</div>
-      <div class="process-step"><span class="step-num">03</span><h4>Automation</h4><p>Make.com executes the workflow & integrations</p></div>
-      <div class="process-arrow">→</div>
-      <div class="process-step"><span class="step-num">04</span><h4>Business Result</h4><p>Leads, replies, CRM records & alerts</p></div>
-    </div>
-  </section>
-
-  <!-- ===== TECH ===== -->
-  <section class="section" id="tech">
-    <div class="section-head">
-      <span class="eyebrow">Technology</span>
-      <h2>Technology Stack</h2>
-    </div>
-    <div class="tech-grid">
-      <div class="tech-card"><span class="tech-emoji">⚙️</span><span>Make.com</span></div>
-      <div class="tech-card"><span class="tech-emoji">🤖</span><span>AI Agents</span></div>
-      <div class="tech-card"><span class="tech-emoji">🧠</span><span>GPT Models</span></div>
-      <div class="tech-card"><span class="tech-emoji">✨</span><span>Gemini</span></div>
-      <div class="tech-card"><span class="tech-emoji">🔮</span><span>Claude</span></div>
-      <div class="tech-card"><span class="tech-emoji">🕸️</span><span>Apify</span></div>
-      <div class="tech-card"><span class="tech-emoji">🌐</span><span>Apollo</span></div>
-      <div class="tech-card"><span class="tech-emoji">🔍</span><span>Tavily / Exa</span></div>
-      <div class="tech-card"><span class="tech-emoji">☁️</span><span>Google Workspace</span></div>
-      <div class="tech-card"><span class="tech-emoji">📧</span><span>Gmail API</span></div>
-      <div class="tech-card"><span class="tech-emoji">🗄️</span><span>Supabase</span></div>
-      <div class="tech-card"><span class="tech-emoji">🔗</span><span>Webhooks</span></div>
-    </div>
-  </section>
-
-  <!-- ===== CONTACT ===== -->
-  <section class="section contact" id="contact">
-    <div class="section-head">
-      <span class="eyebrow">Get Started</span>
-      <h2>Ready To Build Your AI System?</h2>
-      <p class="section-lead">Tell us what you want to automate and we'll design the right AI workflow for your business.</p>
-    </div>
-    <div class="contact-grid" id="contact-grid"></div>
-  </section>
-
-  <!-- ===== FOOTER ===== -->
   <footer>
     <div class="footer-inner">
       <div class="footer-brand">
-        <img src="assets/logo.png" alt="FSAI" class="footer-logo">
+        <span class="logo-text" style="color:#fff;font-size:1.2rem">Flow Strategic AI</span>
         <p>Autonomous AI systems for lead generation, support, CRM & content.</p>
       </div>
       <div class="footer-copy">© <span id="year"></span> Flow Strategic AI. All rights reserved.</div>

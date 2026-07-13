@@ -26,8 +26,8 @@ const CONFIG = {
   socials: {
     whatsapp: "https://wa.me/254723025978",
     youtube: "https://youtube.com/@flowstrategicAI",
-    linkedin: "https://linkedin.com/company/flowstrategicai",
-    twitter: "https://x.com/flowstrategicai",
+    linkedin: "https://linkedin.com/flowstrategicai",
+    twitter: "https://x.com/FlowStrategicAI",
     facebook: "https://facebook.com/flowstrategicai"
   },
 

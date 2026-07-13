@@ -53,10 +53,12 @@ function getOrCreateId(key, prefix) {
 }
 
 
+const CFG = window.CONFIG;
+
 function createChatbot() {
-    if (!window.CONFIG || !CONFIG.chatbot || CONFIG.chatbot.enabled === false) {
-        return;
-    }
+    window.CONFIG = {
+   ...
+};
 
     const chatButton = document.createElement("button");
     chatButton.id = "fsai-chat-button";

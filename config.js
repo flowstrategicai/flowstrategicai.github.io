@@ -1,64 +1,72 @@
 /*
 ========================================================
-FLOW STRATEGIC AI — MASTER CONFIGURATION
-========================================================
-This is the ONLY file you edit to customize the site.
-To reuse for a client: change values below, swap logo,
-update webhook. No HTML/CSS/JS editing required.
+
+FLOW STRATEGIC AI WEBSITE CONFIGURATION
+
+Edit this file when you want to change:
+- Company name
+- Logo
+- Email
+- Social links
+- Make.com webhook
+- Chatbot name/message
+- YouTube demos
+
+You should not need to edit script.js for normal changes.
+
 ========================================================
 */
 
 const CONFIG = {
+    companyName: "Flow Strategic AI",
+    shortName: "FSAI",
+    website: "https://flowstrategicai.github.io",
+    logo: "assets/logo.png",
 
-  // ===== BRAND =====
-  companyName: "Flow Strategic AI",
-  shortName: "FSAI",
-  logo: "assets/logo.png",
+    tagline:
+        "Autonomous AI Systems That Generate Leads, Automate Operations, And Scale Businesses.",
 
-  heroTitle: "Autonomous AI Systems That Run Your Business",
-  heroSubtitle: "I design AI agents and Make.com workflows that generate leads, automate operations, and scale businesses — with minimal human input.",
+    description:
+        "Flow Strategic AI builds autonomous AI agents, Make.com automation systems, AI lead generation engines, CRM automation, content systems, and AI customer support workflows.",
 
-  aboutText: "I design and build autonomous AI systems that help businesses generate leads, automate repetitive operations, improve customer support, and scale without increasing manual workload. Every system is built with governance, reliability, and business outcomes as the priority — not automation for its own sake.",
+    contact: {
+        email: "flowstrategicai@gmail.com",
+        whatsappNumber: "254723025978",
+        whatsappLink: "https://wa.me/254723025978",
+        youtube: "https://www.youtube.com/@flowstrategicAI",
+        linkedin: "https://linkedin.com/flowstrategicai",
+        twitter: "https://x.com/flowstrategicai",
+        facebook: "https://facebook.com/flowstrategicai"
+    },
 
-  // ===== CONTACT =====
-  email: "flowstrategicai@gmail.com",
+    chatbot: {
+        enabled: true,
 
-  socials: {
-    whatsapp: "https://wa.me/254723025978",
-    youtube: "https://youtube.com/@flowstrategicAI",
-    linkedin: "https://linkedin.com/company/flowstrategicai",
-    twitter: "https://x.com/flowstrategicai",
-    facebook: "https://facebook.com/flowstrategicai"
-  },
+        name: "FSAI Assistant",
 
-  // ===== CHATBOT =====
-  chatbot: {
-    enabled: true,
-    name: "FSAI Assistant",
-    welcomeMessage: "👋 Welcome to Flow Strategic AI.\n\nI'm the FSAI Assistant. I can answer questions about our AI automation systems, recommend the right solution for your business, and help you get started with your project.\n\nWhat would you like to automate?",
-    webhook: "https://hook.eu1.make.com/1gbvkovboen1vv62mn5ajztnvvywtv6p",
-    suggestions: [
-      "AI Lead Generation",
-      "Customer Support AI",
-      "CRM Automation",
-      "Content Automation"
-    ]
-  },
+        welcomeMessage:
+            "👋 Welcome to Flow Strategic AI.\n\nI'm the FSAI Assistant. I can answer questions about our AI automation systems, recommend the right solution for your business, and help you get started with your project.",
 
-  // ===== YOUTUBE DEMO IDs =====
-  demos: {
-    leadGeneration: "kKB_HY7aGY0",
-    leadQualification: "YiVzjhvPb1c",
-    contentEngine: "szXMjJKdp0g",
-    youtubeDistribution: "D0PS_5BHlME"
-  },
+        webhook:
+            "https://hook.eu1.make.com/z6v4q85quj2lskggt62p44dmbnaba3rj",
 
-  // ===== STATS =====
-  stats: [
-    { number: "12+", label: "AI Systems Built" },
-    { number: "30+", label: "Workflow Modules" },
-    { number: "15+", label: "API Integrations" },
-    { number: "24/7", label: "Autonomous Operation" }
-  ]
+        fallbackMessage:
+            "Sorry, I could not connect right now. Please email us at flowstrategicai@gmail.com or message us on WhatsApp."
+    },
 
+    demos: {
+        leadGeneration: "kKB_HY7aGY0",
+        leadQualification: "YiVzjhvPb1c",
+        contentEngine: "szXMjJKdp0g",
+        youtubeDistribution: "D0PS_5BHlME"
+    },
+
+    colors: {
+        background: "#050505",
+        card: "#111111",
+        accent: "#00E5FF",
+        accentTwo: "#0066FF",
+        text: "#FFFFFF",
+        muted: "#A8A8B3"
+    }
 };

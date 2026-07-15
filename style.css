@@ -369,3 +369,243 @@ footer{border-top:1px solid var(--border);background:var(--bg-soft);padding:50px
     grid-template-columns:1fr;
   }
 }
+
+
+/* ============ SEO / MARKETING UPGRADES ============ */
+
+.card-category{
+  display:inline-block;
+  color:var(--accent);
+  font-size:.78rem;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+
+.card-actions{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-top:18px;
+  flex-wrap:wrap;
+}
+
+.muted-link{
+  color:var(--muted)!important;
+  font-size:.86rem;
+  font-weight:600;
+}
+
+.muted-link:hover{
+  color:var(--accent)!important;
+}
+
+.service-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:24px;
+}
+
+.service-grid.compact{
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+}
+
+.service-card{
+  background:linear-gradient(145deg,#111119,#09090d);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:30px;
+  transition:.3s;
+  position:relative;
+  overflow:hidden;
+}
+
+.service-card::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:3px;
+  background:var(--grad);
+  opacity:.75;
+}
+
+.service-card:hover{
+  transform:translateY(-7px);
+  border-color:var(--accent);
+  box-shadow:0 18px 50px rgba(0,0,0,.35);
+}
+
+.service-card span{
+  display:inline-flex;
+  width:44px;
+  height:44px;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,229,255,.08);
+  border:1px solid rgba(0,229,255,.18);
+  border-radius:14px;
+  font-size:1.4rem;
+  margin-bottom:18px;
+}
+
+.service-card h3{
+  font-size:1.2rem;
+  margin-bottom:10px;
+}
+
+.service-card p{
+  color:var(--muted);
+  font-size:.96rem;
+}
+
+.proof-strip{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:18px;
+  margin-top:40px;
+}
+
+.proof-item{
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:22px;
+}
+
+.proof-item strong{
+  display:block;
+  font-size:1rem;
+  margin-bottom:8px;
+}
+
+.proof-item span{
+  display:block;
+  color:var(--muted);
+  font-size:.94rem;
+}
+
+.cta-panel{
+  max-width:860px;
+  margin:0 auto 38px;
+  padding:38px;
+  text-align:center;
+  border:1px solid rgba(0,229,255,.22);
+  border-radius:28px;
+  background:
+    radial-gradient(circle at top,rgba(0,229,255,.12),transparent 45%),
+    linear-gradient(145deg,#111119,#08080c);
+  box-shadow:0 30px 80px rgba(0,0,0,.35);
+}
+
+.cta-panel h3{
+  font-size:1.65rem;
+  margin-bottom:10px;
+}
+
+.cta-panel p{
+  color:var(--muted);
+  max-width:640px;
+  margin:0 auto 24px;
+}
+
+.fsai-close{
+  background:transparent;
+  border:none;
+  color:#fff;
+}
+
+main.section{
+  padding-top:150px;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:3px;
+}
+
+@media(max-width:600px){
+  .card-actions{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .cta-panel{
+    padding:28px 20px;
+  }
+}
+
+
+/* ============ DEEP DIVE CONTENT FOR CASE STUDIES ============ */
+
+.deep-dive-content h2 {
+  font-size: 1.8rem;
+  color: var(--text);
+  margin-top: 30px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+
+.deep-dive-content h2:first-child {
+  margin-top: 0;
+}
+
+.deep-dive-content h3 {
+  font-size: 1.3rem;
+  color: var(--accent);
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+.deep-dive-content p {
+  color: var(--muted);
+  margin-bottom: 16px;
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+
+.deep-dive-content ul,
+.deep-dive-content ol {
+  margin-bottom: 24px;
+  padding-left: 0;
+  list-style: none;
+}
+
+.deep-dive-content li {
+  color: #c8c8d4;
+  margin-bottom: 10px;
+  padding-left: 28px;
+  position: relative;
+  line-height: 1.6;
+}
+
+.deep-dive-content ul li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.deep-dive-content ol {
+  counter-reset: step-counter;
+}
+
+.deep-dive-content ol li::before {
+  counter-increment: step-counter;
+  content: counter(step-counter) ".";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.deep-dive-content strong {
+  color: #ffffff;
+}

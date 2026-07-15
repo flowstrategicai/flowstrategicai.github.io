@@ -49,6 +49,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const project = PROJECTS.find(p => p.id === id);
   const root = document.getElementById("project-root");
 
+  if (!root) return;
+
   if (!project) {
     root.innerHTML = `
       <div class="section-head">
@@ -61,6 +63,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.title = project.title + " | Flow Strategic AI";
 
+  const metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) {
+    metaDesc.setAttribute("content", project.summary);
+  }
+
   root.innerHTML = `
     <div class="section-head">
       <span class="eyebrow">${project.category}</span>
@@ -70,6 +77,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     <div class="case-grid">
       <div class="case-main">
+
+        ${project.demo ? `
+        <div class="case-card">
+          <h3>Demo</h3>
+          <div class="video-wrap">
+            <iframe src="${project.demo}" title="${project.title} demo" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </div>` : ""}
+
+        ${project.content ? `
+        <div class="case-card deep-dive-content">
+          ${project.content}
+        </div>` : `
         <div class="case-card">
           <h3>Overview</h3>
           <p>${project.summary}</p>
@@ -92,15 +112,8 @@ document.addEventListener("DOMContentLoaded", () => {
           <ul>
             ${project.outcome.map(x => `<li>${x}</li>`).join("")}
           </ul>
-        </div>
+        </div>`}
 
-        ${project.demo ? `
-        <div class="case-card">
-          <h3>Demo</h3>
-          <div class="video-wrap">
-            <iframe src="${project.demo}" allowfullscreen loading="lazy"></iframe>
-          </div>
-        </div>` : ""}
       </div>
 
       <aside class="case-side">

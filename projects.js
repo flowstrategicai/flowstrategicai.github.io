@@ -22,7 +22,7 @@ const PROJECTS = [
       "Google Sheets or Supabase CRM tracking",
       "Gmail draft or auto-send routing"
     ],
-    stack: ["Make.com", "GPT-5.5", "Apify", "Apollo", "Exa", "Tavily", "Gmail", "Google Sheets"],
+    stack: ["Make.com", "AI Agents", "Apify", "Apollo", "Exa", "Tavily", "Gmail", "Google Sheets"],
     demo: "https://www.youtube.com/embed/kKB_HY7aGY0",
     pageHeadline: "Autonomous outbound pipeline powered by AI signal detection and Make.com orchestration.",
     businessImpact: "This system replaces manual prospecting with a controlled AI workflow that finds, qualifies, researches, and prepares outreach for high-fit business prospects."
@@ -50,18 +50,18 @@ const PROJECTS = [
       "Executive Gmail alerts",
       "Run-log audit trail"
     ],
-    stack: ["Make.com", "GPT-5.5", "Tavily", "Exa", "Google Sheets", "Gmail"],
+    stack: ["Make.com", "AI Agents", "Tavily", "Exa", "Google Sheets", "Gmail"],
     demo: "",
     pageHeadline: "AI-powered market signal detection that turns online pain signals into actionable revenue opportunities.",
     businessImpact: "This system helps teams find prospects when they are actively showing signs of operational pain, instead of relying only on static cold lists."
   },
   {
     id: "ai-customer-support-rag-system",
-    title: "AI Customer Support & FAQ RAG System",
+    title: "AI Customer Support & FAQ Automation",
     category: "Customer Support",
     icon: "🤖",
     rating: "★★★★★",
-    summary: "A reusable autonomous support assistant that searches an approved knowledge base, answers customer questions, remembers conversation context, logs support interactions, and escalates complex issues.",
+    summary: "A reusable AI support assistant that answers customer questions, searches an approved knowledge base, remembers conversation context, logs interactions, qualifies visitors, and escalates complex issues.",
     outcome: [
       "24/7 customer support",
       "Reduced repetitive questions",
@@ -71,17 +71,17 @@ const PROJECTS = [
     features: [
       "Website chat widget",
       "Make.com webhook integration",
-      "RAG knowledge base search",
+      "Knowledge-base search",
       "Conversation memory",
-      "Support ticket creation",
+      "Lead qualification",
       "Gmail escalation alerts",
       "Google Sheets support logs",
       "Client-swappable configuration"
     ],
-    stack: ["Make.com", "AI Agent", "RAG", "Google Sheets", "Gmail", "Webhooks"],
+    stack: ["Make.com", "AI Agent", "Google Sheets", "Gmail", "Webhooks"],
     demo: "",
-    pageHeadline: "A true customer-support AI assistant grounded in approved company knowledge.",
-    businessImpact: "This system gives businesses a practical AI support layer that can answer common questions instantly and route sensitive issues to humans."
+    pageHeadline: "A practical customer-support AI assistant grounded in approved business knowledge.",
+    businessImpact: "This system gives businesses a practical AI support layer that can answer common questions instantly and route sensitive or complex issues to humans."
   },
   {
     id: "ai-lead-qualification-system",
@@ -130,7 +130,7 @@ const PROJECTS = [
       "Content calendar logging",
       "Auto-scheduling support"
     ],
-    stack: ["Make.com", "GPT", "Gemini", "DALL·E", "Social APIs", "Google Sheets"],
+    stack: ["Make.com", "AI Copywriting", "Gemini", "DALL·E", "Social APIs", "Google Sheets"],
     demo: "https://www.youtube.com/embed/szXMjJKdp0g",
     pageHeadline: "AI content operations engine for consistent multi-platform publishing.",
     businessImpact: "This system helps businesses maintain a stronger content presence without manually writing every post."
@@ -210,7 +210,7 @@ const PROJECTS = [
       "Content calendar logging",
       "Internal alerts"
     ],
-    stack: ["Make.com", "GPT-5.5", "Tavily", "Exa", "Google Sheets", "Gmail", "DALL·E"],
+    stack: ["Make.com", "AI Agents", "Tavily", "Exa", "Google Sheets", "Gmail", "DALL·E"],
     demo: "",
     pageHeadline: "A combined inbound content and market-intelligence engine for B2B growth.",
     businessImpact: "This system helps technical agencies stay visible online while also identifying high-intent market opportunities."
@@ -226,7 +226,7 @@ const CATEGORIES = [
   {
     id: "customer-support",
     name: "Customer Support",
-    description: "RAG-based support assistants, FAQ bots, escalation workflows, and customer service automation."
+    description: "AI support assistants, FAQ bots, escalation workflows, and customer service automation."
   },
   {
     id: "marketing-ai",
@@ -261,8 +261,9 @@ const CATEGORIES = [
 ];
 
 function slugifyCategory(name) {
-  return name
+  return String(name || "")
     .toLowerCase()
+    .trim()
     .replace(/&/g, "and")
     .replace(/<sup id="fnref-a-z0-9" class="footnote-ref"><a href="#fn-a-z0-9" aria-label="Footnote 1">[1]</a></sup>+/g, "-")
     .replace(/(^-|-$)/g, "");

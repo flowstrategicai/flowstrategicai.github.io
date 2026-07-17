@@ -51,7 +51,7 @@
 
         <div class="hero-buttons">
           <a href="#systems" class="btn-primary">Explore AI Systems</a>
-          <a href="#agent-demo" class="btn-secondary">Try Universal AI Agent Free</a>
+          <a href="#agent-demo" class="btn-secondary">Try The Apex Executive AI Free</a>
           <button class="btn-secondary" type="button" onclick="openChat()">💬 Chat with FSAI Assistant</button>
         </div>
 
@@ -85,44 +85,47 @@
       <div class="cards" id="service-cards"></div>
     </section>
 
-    <section class="section agent-demo" id="agent-demo">
-      <div class="section-head">
-        <span class="eyebrow">Free Live Portfolio Demo</span>
-        <h2>Test The Universal Autonomous AI Agent</h2>
-        <p class="section-lead">
-          Try the same class of AI agent architecture used inside Flow Strategic AI systems. Ask for strategy, research, debugging, workflow planning, content, sales help, or critical assistance.
-          One free test. No login. No strings attached.
-        </p>
+<section class="section agent-demo" id="agent-demo">
+  <div class="section-head">
+    <span class="eyebrow">Free Live Premium Demo</span>
+    <h2>Test The Apex Executive AI Strategy Engine</h2>
+    <p class="section-lead">
+      Experience a premium AI research, strategy, and automation advisor built to analyze business problems, identify high-ROI opportunities, and recommend practical next steps.
+      Because this is a deeper research-grade AI system, responses can take up to 10 minutes when the request requires advanced reasoning, tool use, or detailed analysis.
+      One free test. No login. No strings attached.
+    </p>
+  </div>
+
+  <div class="demo-shell">
+    <div class="demo-copy">
+      <h3>Ask a high-value business question</h3>
+      <ul>
+        <li>What should I automate first for the highest ROI?</li>
+        <li>Where is my business losing the most time and money?</li>
+        <li>How can I scale without hiring more people?</li>
+        <li>What AI systems should I build to grow my business?</li>
+      </ul>
+      <p class="small-note">
+        After your free test, you can request a custom AI system built around your business, tools, workflows, and growth goals.
+      </p>
+    </div>
+
+    <div class="demo-panel">
+      <label for="agent-prompt">Your prompt</label>
+      <textarea id="agent-prompt" placeholder="Example: What should I automate first for the highest ROI in my business? I run a service business and spend too much time on lead follow-up, admin, and customer replies."></textarea>
+
+      <div class="agent-suggestions" id="agent-suggestions" aria-label="Suggested prompts"></div>
+
+      <div class="demo-actions">
+        <button id="agent-submit" class="btn-primary" type="button">Run Free Premium AI Test</button>
+        <a href="#contact" class="btn-secondary">Build My AI System</a>
       </div>
 
-      <div class="demo-shell">
-        <div class="demo-copy">
-          <h3>What you can test</h3>
-          <ul>
-            <li>Ask it to design an automation workflow for your business.</li>
-            <li>Ask it to debug a Make.com, API, CRM, or sales process problem.</li>
-            <li>Ask it for market research, content ideas, outreach angles, or operational strategy.</li>
-            <li>Ask it what AI system your business should build first.</li>
-          </ul>
-          <p class="small-note">
-            After your free test is used, the demo locks on this browser and invites you to buy or contact Flow Strategic AI.
-          </p>
-        </div>
-
-        <div class="demo-panel">
-          <label for="agent-prompt">Your prompt</label>
-          <textarea id="agent-prompt" placeholder="Example: I run a coaching business and waste time qualifying leads manually. Design an AI automation system that captures leads, scores them, replies by email, and logs them into a CRM."></textarea>
-
-          <div class="demo-actions">
-            <button id="agent-submit" class="btn-primary" type="button">Run Free AI Test</button>
-            <a href="#contact" class="btn-secondary">Buy / Build My System</a>
-          </div>
-
-          <div id="agent-status" class="agent-status"></div>
-          <pre id="agent-result" class="agent-result"></pre>
-        </div>
-      </div>
-    </section>
+      <div id="agent-status" class="agent-status"></div>
+      <div id="agent-result" class="agent-result"></div>
+    </div>
+  </div>
+</section>
 
     <section class="section" id="demos">
       <div class="section-head">
@@ -247,7 +250,9 @@
     </div>
   </footer>
 
-  <script src="config.js"></script>
-  <script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+<script src="config.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

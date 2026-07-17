@@ -136,6 +136,29 @@ strong{color:#fff}
   justify-content:center;
   flex-wrap:wrap;
 }
+.agent-suggestions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-top:13px;
+}
+
+.agent-suggestions button{
+  background:rgba(79,124,255,.1);
+  border:1px solid rgba(79,124,255,.3);
+  color:#b9c8ff;
+  padding:8px 13px;
+  border-radius:999px;
+  font-size:.82rem;
+  cursor:pointer;
+  transition:.2s ease;
+}
+
+.agent-suggestions button:hover{
+  background:rgba(79,124,255,.24);
+  border-color:var(--accent);
+  color:#fff;
+}
 .hero-buttons{margin-bottom:38px}
 .btn-primary,.btn-secondary{
   display:inline-flex;
@@ -363,16 +386,104 @@ strong{color:#fff}
 .agent-result{
   display:none;
   margin-top:16px;
-  white-space:pre-wrap;
-  word-break:break-word;
   background:#07070b;
   color:#f1f1ff;
   border:1px solid var(--border);
   border-radius:18px;
-  padding:18px;
-  max-height:520px;
+  padding:22px;
+  max-height:620px;
   overflow:auto;
-  font-size:.92rem;
+  font-size:.94rem;
+  line-height:1.7;
+  word-break:break-word;
+}
+
+.agent-result h1,
+.agent-result h2,
+.agent-result h3,
+.agent-result h4{
+  line-height:1.25;
+  margin:1.1em 0 .55em;
+  color:#fff;
+}
+
+.agent-result h1{font-size:1.65rem}
+.agent-result h2{font-size:1.42rem}
+.agent-result h3{font-size:1.22rem}
+.agent-result h4{font-size:1.08rem}
+
+.agent-result p{
+  margin:.75em 0;
+  color:#f1f1ff;
+}
+
+.agent-result ul,
+.agent-result ol{
+  margin:.75em 0 .75em 1.35em;
+  padding-left:1em;
+}
+
+.agent-result li{
+  margin:.35em 0;
+}
+
+.agent-result a{
+  color:var(--accent);
+  text-decoration:underline;
+}
+
+.agent-result strong{
+  color:#fff;
+}
+
+.agent-result code{
+  background:#11111a;
+  border:1px solid var(--border);
+  padding:.15em .35em;
+  border-radius:6px;
+  color:#b9f6ff;
+  font-size:.9em;
+}
+
+.agent-result pre{
+  background:#0d0d14;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+  overflow:auto;
+  margin:1em 0;
+}
+
+.agent-result pre code{
+  background:transparent;
+  border:0;
+  padding:0;
+  color:#f1f1ff;
+}
+
+.agent-result blockquote{
+  border-left:3px solid var(--accent);
+  padding-left:14px;
+  margin:1em 0;
+  color:var(--muted2);
+}
+
+.agent-result table{
+  width:100%;
+  border-collapse:collapse;
+  margin:1em 0;
+  overflow:auto;
+}
+
+.agent-result th,
+.agent-result td{
+  border:1px solid var(--border);
+  padding:9px;
+  text-align:left;
+}
+
+.agent-result th{
+  background:#11111a;
 }
 
 .videos{

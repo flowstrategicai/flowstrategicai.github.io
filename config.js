@@ -36,10 +36,16 @@ const CONFIG = {
 
   agentDemo: {
     enabled: true,
-    webhook: "https://hook.eu1.make.com/w2z23nle79wfysy165ob5fvbrj253rre",
-    oneUseStorageKey: "fsai_universal_agent_free_test_used",
-    usedMessage: "Your free AI agent test has already been used on this browser. To build your own AI system or get premium implementation help, contact Flow Strategic AI below."
-  },
+    webhook: "https://hook.eu1.make.com/6ae1egwgoi2f49pmj5b6rfnqkevbavvo",
+  oneUseStorageKey: "fsai_universal_agent_free_test_used",
+  usedMessage: "Your free premium AI strategy test has already been used. Ready for a custom AI system? Contact Flow Strategic AI below and request an automation plan built around your business.",
+  suggestions: [
+    "What should I automate first for the highest ROI?",
+    "Where is my business losing the most time and money?",
+    "How can I scale without hiring more people?",
+    "What AI systems should I build to grow my business?"
+  ]
+},
 
   stats: [
     { number: "12+", label: "AI Systems Built" },
@@ -213,22 +219,22 @@ const CONFIG = {
       href: "#contact",
       cta: "Request a custom integration"
     },
-    {
-      icon: "🧪",
-      impact: "Free Demo",
-      title: "Universal Autonomous AI Agent",
-      description: "A live portfolio demo powered by an autonomous AI agent built in Make.com. Visitors can test it once for free with no login, then request implementation.",
-      bullets: [
-        "Universal prompt assistance",
-        "Research, planning, debugging, and strategy",
-        "Make.com AI Agent architecture",
-        "Tool-using agent design",
-        "One free test on this site"
-      ],
-      tags: ["Make.com", "AI Agent", "Webhooks", "Live Demo"],
-      href: "#agent-demo",
-      cta: "Test it free once"
-    }
+{
+  icon: "🧪",
+  impact: "Premium Demo",
+  title: "Apex Executive AI Strategy Engine",
+  description: "A live premium portfolio demo powered by an autonomous AI research, strategy, and automation advisor built in Make.com. Test it once for free, then request a custom implementation for your business.",
+  bullets: [
+    "High-ROI automation opportunity analysis",
+    "Business strategy, research, debugging, and workflow planning",
+    "Premium Make.com AI Agent architecture",
+    "Tool-using research and reasoning system",
+    "One free premium test on this site"
+  ],
+  tags: ["Make.com", "AI Agent", "Research", "Strategy"],
+  href: "#agent-demo",
+  cta: "Test the premium AI advisor"
+}
   ],
 
   courseModules: [

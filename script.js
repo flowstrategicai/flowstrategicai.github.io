@@ -176,12 +176,142 @@ function initAgentDemo(){
   const btn = document.getElementById("agent-submit");
   const status = document.getElementById("agent-status");
   const result = document.getElementById("agent-result");
+  const suggestionsWrap = document.getElementById("agent-suggestions");
+
+  if(suggestionsWrap && Array.isArray(CONFIG.agentDemo.suggestions)){
+    suggestionsWrap.innerHTML = "";
+    CONFIG.agentDemo.suggestions.forEach(suggestion => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.textContent = suggestion;
+      chip.addEventListener("click", () => {
+        promptEl.value = suggestion;
+        promptEl.focus();
+      });
+      suggestionsWrap.appendChild(chip);
+    });
+  }
 
   const used = localStorage.getItem(CONFIG.agentDemo.oneUseStorageKey) === "true";
 
   if(used){
     lockAgentDemo(status, result, btn);
   }
+
+  btn.addEventListener("click", async () => {
+    const alreadyUsed = localStorage.getItem(CONFIG.agentDemo.oneUseStorageKey) === "true";
+
+    if(alreadyUsed){
+      lockAgentDemo(status, result, btn);
+      return;
+    }
+
+    const prompt = promptEl.value.trim();
+
+    if(!prompt){
+      status.className = "agent-status bad";
+      status.textContent = "Please enter a prompt first.";
+      return;
+    }
+
+    if(!CONFIG.agentDemo.webhook || CONFIG.agentDemo.webhook.includes("PASTE_YOUR")){
+      status.className = "agent-status bad";
+      status.textContent = "Demo webhook is not connected yet. Paste your Make.com webhook URL into CONFIG.agentDemo.webhook in config.js.";
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Running premium analysis...";
+    status.className = "agent-status";
+    result.style.display = "none";
+    result.innerHTML = "";
+
+    const startedAt = Date.now();
+
+    const updateStatus = () => {
+      const elapsedSeconds = Math.floor((Date.now() - startedAt) / 1000);
+      const mins = Math.floor(elapsedSeconds / 60);
+      const secs = elapsedSeconds % 60;
+      const elapsed = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+
+      status.textContent = `The Apex Executive AI Strategy Engine is working. Elapsed: ${elapsed}. This can take up to 10 minutes because deeper research, reasoning, tool use, and premium-quality analysis take longer. Please keep this tab open.`;
+    };
+
+    updateStatus();
+    const statusTimer = setInterval(updateStatus, 1000);
+
+    const payload = {
+      prompt,
+      message: prompt,
+      value: prompt,
+      user_context: "Website visitor using Flow Strategic AI one-free-test Apex Executive AI Strategy Engine demo.",
+      output_format: "Premium practical answer in Markdown with clear sections, prioritized recommendations, and next steps.",
+      research_mode: "Use tools when useful. Prioritize depth, accuracy, and business value.",
+      conversation_id: getOrCreateId("fsai_agent_conversation", "conversation"),
+      session_id: getSessionId(),
+      visitor_id: getOrCreateId("fsai_visitor", "visitor"),
+      page_url: window.location.href,
+      user_agent: navigator.userAgent,
+      referrer: document.referrer,
+      timestamp: new Date().toISOString()
+    };
+
+    /*
+      Critical fix:
+      The old version aborted after 90 seconds.
+      Your Make.com AI Agent can run for up to 600 seconds.
+      This waits 11 minutes, giving Make.com enough time to complete the agent step
+      and return the final Webhook Respond output.
+    */
+    const AGENT_DEMO_TIMEOUT_MS = 660000;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), AGENT_DEMO_TIMEOUT_MS);
+
+    try{
+      const res = await fetch(CONFIG.agentDemo.webhook, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeout);
+      clearInterval(statusTimer);
+
+      const raw = await res.text();
+
+      if(!res.ok) throw new Error(`Webhook ${res.status}: ${raw}`);
+
+      const reply = parseWebhookReply(raw);
+      const finalText = reply || raw || "The agent responded, but no readable text was returned.";
+
+      localStorage.setItem(CONFIG.agentDemo.oneUseStorageKey, "true");
+
+      status.className = "agent-status good";
+      status.textContent = "Premium AI test complete. Want this built into your business? Contact Flow Strategic AI below.";
+
+      result.style.display = "block";
+      result.innerHTML = renderMarkdownSafe(finalText);
+
+      btn.textContent = "Free Test Used";
+      btn.disabled = true;
+    }catch(err){
+      clearTimeout(timeout);
+      clearInterval(statusTimer);
+
+      console.error("Apex Executive AI Strategy Engine demo error:", err);
+
+      status.className = "agent-status bad";
+
+      status.textContent = err.name === "AbortError"
+        ? "The AI system reached the maximum live demo processing window before a final response was returned. Your free test has not been used. You can try again with a narrower prompt or contact Flow Strategic AI for a full premium implementation."
+        : "The demo could not connect right now. Your free test has not been used. Please try again or contact Flow Strategic AI.";
+
+      btn.disabled = false;
+      btn.textContent = "Run Free Premium AI Test";
+    }
+  });
+}
 
   btn.addEventListener("click", async () => {
     const alreadyUsed = localStorage.getItem(CONFIG.agentDemo.oneUseStorageKey) === "true";
@@ -263,12 +393,13 @@ function initAgentDemo(){
     }
   });
 }
-
 function lockAgentDemo(status, result, btn){
   status.className = "agent-status good";
   status.textContent = CONFIG.agentDemo.usedMessage;
   result.style.display = "block";
-  result.textContent = "Next step: contact Flow Strategic AI to build a custom AI agent, automation workflow, CRM system, support assistant, content engine, or lead generation system for your business.";
+  result.innerHTML = renderMarkdownSafe(
+    "**Next step:** Contact Flow Strategic AI to build a custom AI strategy engine, automation workflow, CRM system, support assistant, content engine, lead generation system, or Make.com automation around your exact business."
+  );
   btn.disabled = true;
   btn.textContent = "Free Test Used";
 }
@@ -445,23 +576,50 @@ async function sendMessage(){
     input.focus();
   }
 }
-
 function parseWebhookReply(raw){
-  let reply = "";
+  if(raw == null) return "";
+
+  const text = String(raw);
 
   try{
-    const data = JSON.parse(raw);
-    reply = data.reply || data.response || data.message || data.text || data.answer || "";
+    const data = JSON.parse(text);
+
+    if(typeof data === "string") return data;
+    if(data.reply) return String(data.reply);
+    if(data.response) return String(data.response);
+    if(data.message) return String(data.message);
+    if(data.text) return String(data.text);
+    if(data.answer) return String(data.answer);
+    if(data.output) return String(data.output);
+    if(data.result) return String(data.result);
+
+    return JSON.stringify(data, null, 2);
   }catch(e){
-    const m = raw.match(/"reply"\s*:\s*"([\s\S]*?)"\s*[,}]/);
-    reply = m
-      ? m[1].replace(/\\"/g,'"').replace(/\\n/g,"\n").replace(/\\r/g,"\r").replace(/\\\\/g,"\\")
-      : raw;
+    return text;
+  }
+}
+function renderMarkdownSafe(markdownText){
+  const text = String(markdownText ?? "");
+
+  if(window.marked && typeof window.marked.parse === "function"){
+    marked.setOptions({
+      breaks: true,
+      gfm: true
+    });
+
+    const dirty = marked.parse(text);
+
+    if(window.DOMPurify){
+      return DOMPurify.sanitize(dirty, {
+        ADD_ATTR: ["target", "rel"]
+      });
+    }
+
+    return dirty;
   }
 
-  return String(reply || "").trim();
+  return escapeHTML(text).replace(/\n/g, "<br>");
 }
-
 function escapeHTML(value){
   return String(value ?? "")
     .replaceAll("&","&amp;")

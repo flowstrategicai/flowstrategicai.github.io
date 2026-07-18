@@ -36,7 +36,7 @@ const CONFIG = {
 
   agentDemo: {
     enabled: true,
-    webhook: "https://hook.eu1.make.com/mgl4s1ghcqw7lr5rb8jhdr9suwrcd2ez",
+    webhook: "https://hook.eu1.make.com/55rvue79y2omx1a8s8uu17dxp191ealz",
     oneUseStorageKey: "fsai_universal_agent_free_test_used",
     usedMessage: "Your free premium AI strategy test has already been used. Ready for a custom AI system? Contact Flow Strategic AI below and request an automation plan built around your business.",
     suggestions: [

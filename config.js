@@ -34,13 +34,6 @@ const CONFIG = {
     ]
   },
 
-const supabase = window.supabase.createClient(
-
-    "glhoepoevinchtanikxo",
-
-    "sb_secret_fwvGnsqo7Yn6y3ZcAkEXpA__dY74xUz"
-
-);
   
   agentDemo: {
     enabled: true,

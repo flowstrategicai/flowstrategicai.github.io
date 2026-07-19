@@ -283,25 +283,28 @@ function initAgentDemo(){
         Thinking... The Apex Executive AI Strategy Engine is starting your premium research job.
       `;
 
-      triggerMakeAsync({
-        job_id: jobId,
-        prompt,
-        message: prompt,
-        value: prompt,
-        user_context: "Website visitor using Flow Strategic AI Apex Executive AI Strategy Engine premium two-turn demo.",
-        output_format: "Premium practical Markdown answer with clear sections, prioritized recommendations, ROI logic, implementation steps, and next actions.",
-        research_mode: "Use tools aggressively when useful. Prioritize depth, accuracy, source quality, and business value.",
-        conversation_id: conversationId,
-        session_id: sessionId,
-        visitor_id: visitorId,
-        turn_number: turnNumber,
-        previous_agent_response: previousAgentResponse,
-        conversation_history: JSON.stringify(conversationHistory, null, 2),
-        page_url: window.location.href,
-        user_agent: navigator.userAgent,
-        referrer: document.referrer,
-        timestamp: new Date().toISOString()
-      });
+      async function triggerMakeAsync(payload){
+  try{
+    const res = await fetch(CONFIG.agentDemo.makeAsyncWebhook, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload),
+      keepalive: false
+    });
+
+    if(!res.ok){
+      const text = await res.text().catch(() => "");
+      console.warn("Make webhook returned a non-2xx response:", res.status, text);
+    }
+
+    return true;
+  }catch(err){
+    console.warn("Make webhook trigger failed. Polling will continue, but Make may not have received the job.", err);
+    return false;
+  }
+}
 
       await pollSupabaseJob({
         jobId,

@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   injectBaseContent();
   renderStats();
+  renderApexValue();
   renderServices();
   renderVideos();
   renderCourse();
@@ -22,42 +23,35 @@ function injectBaseContent(){
 function renderStats(){
   const statsEl = document.getElementById("stats");
   statsEl.innerHTML = "";
-
   CONFIG.stats.forEach(s => {
-    statsEl.insertAdjacentHTML("beforeend", `
-      <div class="stat-box reveal">
-        <div class="stat-num">${escapeHTML(s.number)}</div>
-        <div class="stat-label">${escapeHTML(s.label)}</div>
-      </div>
-    `);
+    statsEl.insertAdjacentHTML("beforeend", `<div class="stat-box reveal"><div class="stat-num">${escapeHTML(s.number)}</div><div class="stat-label">${escapeHTML(s.label)}</div></div>`);
+  });
+}
+
+function renderApexValue(){
+  const grid = document.getElementById("value-grid");
+  if(!grid || !Array.isArray(CONFIG.apexValue)) return;
+  grid.innerHTML = "";
+  CONFIG.apexValue.forEach(item => {
+    grid.insertAdjacentHTML("beforeend", `<div class="value-card reveal"><div class="value-icon">${escapeHTML(item.icon)}</div><h3>${escapeHTML(item.title)}</h3><p>${escapeHTML(item.text)}</p></div>`);
   });
 }
 
 function renderServices(){
   const wrap = document.getElementById("service-cards");
   wrap.innerHTML = "";
-
   CONFIG.services.forEach(service => {
     const bullets = service.bullets.map(b => `<li>${escapeHTML(b)}</li>`).join("");
     const tags = service.tags.map(t => `<span>${escapeHTML(t)}</span>`).join("");
     const live = service.live ? `<span class="card-live">● ${escapeHTML(service.cta)}</span>` : "";
-
     wrap.insertAdjacentHTML("beforeend", `
-      <a class="card reveal" href="${service.href}" aria-label="${escapeHTML(service.title)}">
-        <div class="card-top">
-          <span class="card-icon">${escapeHTML(service.icon)}</span>
-          <span class="card-impact">${escapeHTML(service.impact)}</span>
-        </div>
+      <a class="card reveal" href="${escapeAttribute(service.href)}" aria-label="${escapeAttribute(service.title)}">
+        <div class="card-top"><span class="card-icon">${escapeHTML(service.icon)}</span><span class="card-impact">${escapeHTML(service.impact)}</span></div>
         <h3>${escapeHTML(service.title)}</h3>
         <p>${escapeHTML(service.description)}</p>
         <ul>${bullets}</ul>
         <div class="card-tags">${tags}</div>
-        ${live || `
-          <div class="card-cta">
-            <span>${escapeHTML(service.cta)}</span>
-            <span>→</span>
-          </div>
-        `}
+        ${live || `<div class="card-cta"><span>${escapeHTML(service.cta)}</span><span>→</span></div>`}
       </a>
     `);
   });
@@ -66,19 +60,11 @@ function renderServices(){
 function renderVideos(){
   const vEl = document.getElementById("videos");
   vEl.innerHTML = "";
-
   CONFIG.demos.forEach(v => {
     vEl.insertAdjacentHTML("beforeend", `
       <div class="video-wrap reveal">
         <div class="video-frame">
-          <iframe
-            src="https://www.youtube.com/embed/${encodeURIComponent(v.id)}"
-            title="${escapeHTML(v.title)}"
-            allowfullscreen
-            loading="lazy"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share">
-          </iframe>
+          <iframe src="https://www.youtube.com/embed/${encodeURIComponent(v.id)}" title="${escapeAttribute(v.title)}" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
         </div>
         <div class="video-title">${escapeHTML(v.title)}</div>
       </div>
@@ -89,15 +75,8 @@ function renderVideos(){
 function renderCourse(){
   const grid = document.getElementById("course-grid");
   grid.innerHTML = "";
-
   CONFIG.courseModules.forEach(m => {
-    grid.insertAdjacentHTML("beforeend", `
-      <div class="course-card reveal">
-        <h4>${escapeHTML(m.title)}</h4>
-        <p>${escapeHTML(m.goal)}</p>
-        <div class="deliverable">Deliverable: ${escapeHTML(m.deliverable)}</div>
-      </div>
-    `);
+    grid.insertAdjacentHTML("beforeend", `<div class="course-card reveal"><h4>${escapeHTML(m.title)}</h4><p>${escapeHTML(m.goal)}</p><div class="deliverable">Deliverable: ${escapeHTML(m.deliverable)}</div></div>`);
   });
 }
 
@@ -113,45 +92,30 @@ function renderContactCards(){
     { i:"𝕏", l:"Twitter/X", v:"Follow", h:c.twitter },
     { i:"📘", l:"Facebook", v:"Follow", h:c.facebook }
   ];
-
   const cg = document.getElementById("contact-grid");
   cg.innerHTML = "";
-
   contactData.forEach(x => {
     const target = x.h.startsWith("#") || x.h.startsWith("mailto:") ? "" : `target="_blank" rel="noopener"`;
-    cg.insertAdjacentHTML("beforeend", `
-      <a class="contact-card reveal" href="${escapeAttribute(x.h)}" ${target}>
-        <span class="ci">${escapeHTML(x.i)}</span>
-        <span class="cl">${escapeHTML(x.l)}</span>
-        <span class="cv">${escapeHTML(x.v)}</span>
-      </a>
-    `);
+    cg.insertAdjacentHTML("beforeend", `<a class="contact-card reveal" href="${escapeAttribute(x.h)}" ${target}><span class="ci">${escapeHTML(x.i)}</span><span class="cl">${escapeHTML(x.l)}</span><span class="cv">${escapeHTML(x.v)}</span></a>`);
   });
 }
 
 function initHeader(){
   const header = document.getElementById("header");
-
-  window.addEventListener("scroll", () => {
-    header.classList.toggle("scrolled", window.scrollY > 40);
-  }, { passive:true });
+  window.addEventListener("scroll", () => header.classList.toggle("scrolled", window.scrollY > 40), { passive:true });
 }
 
 function initMenu(){
   const toggle = document.getElementById("menu-toggle");
   const nav = document.getElementById("nav");
-
   toggle.addEventListener("click", () => {
     const isOpen = nav.classList.toggle("open");
     toggle.setAttribute("aria-expanded", String(isOpen));
   });
-
-  nav.querySelectorAll("a").forEach(a => {
-    a.addEventListener("click", () => {
-      nav.classList.remove("open");
-      toggle.setAttribute("aria-expanded", "false");
-    });
-  });
+  nav.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+    nav.classList.remove("open");
+    toggle.setAttribute("aria-expanded", "false");
+  }));
 }
 
 function initReveal(){
@@ -163,16 +127,13 @@ function initReveal(){
       }
     });
   }, { threshold:.12 });
-
-  document.querySelectorAll(".card, .video-wrap, .tech-card, .process-step, .stat-box, .contact-card, .course-card, .reveal")
-    .forEach(el => {
-      el.classList.add("reveal");
-      obs.observe(el);
-    });
+  document.querySelectorAll(".card,.video-wrap,.tech-card,.process-step,.stat-box,.contact-card,.course-card,.value-card,.reveal").forEach(el => {
+    el.classList.add("reveal");
+    obs.observe(el);
+  });
 }
 
 let SESSION_ID = sessionStorage.getItem("fsai_session_id");
-
 if(!SESSION_ID){
   SESSION_ID = cryptoRandomId("session");
   sessionStorage.setItem("fsai_session_id", SESSION_ID);
@@ -197,42 +158,35 @@ function initAgentDemo(){
 
   btn.addEventListener("click", async () => {
     if(activeAgentSubmit || activeAgentJobId){
-      status.className = "agent-status warn";
-      status.textContent = "A premium AI request is already running. Please wait for the current response.";
+      setStatus(status, "warn", "A premium AI request is already running. Please wait for the current response.");
       return;
     }
 
     const usage = getAgentUsage();
-
     if(usage.completedTurns >= CONFIG.agentDemo.maxCompletedTurns){
       lockAgentDemo(status, result, btn, promptEl);
       return;
     }
 
     const prompt = promptEl.value.trim();
-
     if(!prompt){
-      status.className = "agent-status bad";
-      status.textContent = "Please enter a prompt first.";
+      setStatus(status, "bad", "Please enter a prompt first.");
       return;
     }
 
     if(isSupabaseMissing()){
-      status.className = "agent-status bad";
-      status.textContent = "Supabase is not configured yet. Add your Supabase URL and anon key in config.js.";
+      setStatus(status, "bad", "Supabase is not configured yet. Add your Supabase anon key in config.js.");
       return;
     }
 
     if(!CONFIG.agentDemo.makeAsyncWebhook || CONFIG.agentDemo.makeAsyncWebhook.includes("PASTE_YOUR")){
-      status.className = "agent-status bad";
-      status.textContent = "Make.com webhook is not connected yet. Add your Make.com webhook URL in config.js.";
+      setStatus(status, "bad", "Make.com webhook is not connected yet. Add your Make.com webhook URL in config.js.");
       return;
     }
 
     activeAgentSubmit = true;
     btn.disabled = true;
     btn.textContent = "Submitting...";
-    status.className = "agent-status";
     result.style.display = "none";
     result.innerHTML = "";
 
@@ -242,21 +196,14 @@ function initAgentDemo(){
     const turnNumber = usage.completedTurns + 1;
     const conversationHistory = getAgentConversation();
     const previousAgentResponse = getPreviousAgentResponse(conversationHistory);
-
-    addAgentThreadTurn({
-      prompt,
-      response: "",
-      status: "queued",
-      turn_number: turnNumber,
-      created_at: new Date().toISOString()
-    });
+    const startedAtIso = new Date().toISOString();
 
     saveAgentConversationTurn({
       prompt,
       response: "",
       status: "queued",
       turn_number: turnNumber,
-      created_at: new Date().toISOString()
+      created_at: startedAtIso
     });
 
     try{
@@ -269,42 +216,33 @@ function initAgentDemo(){
       });
 
       const jobId = createdJob.id;
-
       activeAgentJobId = jobId;
-
-      updateLastAgentConversationTurn({
-        id: jobId,
-        status: "queued"
-      });
+      updateLastAgentConversationTurn({ id: jobId, status: "queued" });
+      updateDebug({ jobId, status: "queued", turnNumber });
 
       status.className = "agent-status";
-      status.innerHTML = `
-        <span class="agent-loader"><span></span><span></span><span></span></span>
-        Thinking... The Apex Executive AI Strategy Engine is starting your premium research job.
-      `;
+      status.innerHTML = `<span class="agent-loader"><span></span><span></span><span></span></span> Thinking... The Apex Executive AI Strategy Engine is starting your premium research job.`;
 
-      async function triggerMakeAsync(payload){
-  try{
-    const res = await fetch(CONFIG.agentDemo.makeAsyncWebhook, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload),
-      keepalive: false
-    });
-
-    if(!res.ok){
-      const text = await res.text().catch(() => "");
-      console.warn("Make webhook returned a non-2xx response:", res.status, text);
-    }
-
-    return true;
-  }catch(err){
-    console.warn("Make webhook trigger failed. Polling will continue, but Make may not have received the job.", err);
-    return false;
-  }
-}
+      await triggerMakeAsync({
+        job_id: jobId,
+        prompt,
+        message: prompt,
+        value: prompt,
+        text: prompt,
+        user_context: "Website visitor using Flow Strategic AI Apex Executive AI Strategy Engine premium two-turn demo.",
+        output_format: "Premium practical Markdown answer with clear sections, prioritized recommendations, ROI logic, implementation steps, and next actions.",
+        research_mode: "Use tools aggressively when useful. Prioritize depth, accuracy, source quality, and business value.",
+        conversation_id: conversationId,
+        session_id: sessionId,
+        visitor_id: visitorId,
+        turn_number: turnNumber,
+        previous_agent_response: previousAgentResponse,
+        conversation_history: JSON.stringify(conversationHistory, null, 2),
+        page_url: window.location.href,
+        user_agent: navigator.userAgent,
+        referrer: document.referrer,
+        timestamp: startedAtIso
+      });
 
       await pollSupabaseJob({
         jobId,
@@ -319,17 +257,11 @@ function initAgentDemo(){
       });
     }catch(err){
       console.error("Apex Executive AI Strategy Engine submit error:", err);
-
-      status.className = "agent-status bad";
-      status.textContent = cleanErrorMessage(err.message || "The demo could not start. Your free turn has not been used. Please try again.");
-
-      updateLastAgentConversationTurn({
-        status: "failed",
-        error: status.textContent
-      });
-
+      const msg = cleanErrorMessage(err.message || "The demo could not start. Your free turn has not been used. Please try again.");
+      setStatus(status, "bad", msg);
+      updateLastAgentConversationTurn({ status: "failed", error: msg });
       btn.disabled = false;
-      btn.textContent = "Run Free Premium AI Test";
+      btn.textContent = usage.completedTurns === 1 ? "Send Follow-Up" : "Run Free Premium AI Test";
     }finally{
       activeAgentSubmit = false;
       activeAgentJobId = null;
@@ -339,9 +271,7 @@ function initAgentDemo(){
 
 function renderAgentSuggestions(suggestionsWrap, promptEl){
   if(!suggestionsWrap || !Array.isArray(CONFIG.agentDemo.suggestions)) return;
-
   suggestionsWrap.innerHTML = "";
-
   CONFIG.agentDemo.suggestions.forEach(suggestion => {
     const chip = document.createElement("button");
     chip.type = "button";
@@ -362,39 +292,34 @@ async function createSupabaseJob(payload){
     p_session_id: payload.session_id,
     p_turn_number: payload.turn_number
   });
-
-  if(!data || !data.id){
-    throw new Error("Supabase did not return a job ID.");
-  }
-
+  if(!data || !data.id) throw new Error("Supabase did not return a job ID.");
   return data;
 }
 
-function triggerMakeAsync(payload){
-  fetch(CONFIG.agentDemo.makeAsyncWebhook, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload),
-    keepalive: false
-  }).catch(err => {
-    console.warn("Make webhook trigger did not return cleanly. This does not stop polling if Make received the job.", err);
-  });
+async function triggerMakeAsync(payload){
+  try{
+    await fetch(CONFIG.agentDemo.makeAsyncWebhook, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: false
+    });
+  }catch(err){
+    console.warn("Make webhook trigger did not return cleanly. Polling will continue if Make received the job.", err);
+  }
 }
 
 async function pollSupabaseJob({ jobId, visitorId, sessionId, statusEl, resultEl, buttonEl, promptEl, turnNumber, startedAt }){
   if(activeAgentPoll) clearTimeout(activeAgentPoll);
 
   let attempt = 0;
-  let delay = 1400;
-  const maxDelay = 15000;
+  let delay = CONFIG.agentDemo.pollInitialDelayMs || 1400;
+  const maxDelay = CONFIG.agentDemo.pollMaxDelayMs || 15000;
   const maxWait = CONFIG.agentDemo.maxLiveWaitMs || 900000;
 
   return new Promise((resolve, reject) => {
     const tick = async () => {
       attempt += 1;
-
       try{
         if(Date.now() - startedAt > maxWait){
           activeAgentPoll = null;
@@ -410,10 +335,7 @@ async function pollSupabaseJob({ jobId, visitorId, sessionId, statusEl, resultEl
         const elapsed = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
 
         statusEl.className = "agent-status";
-        statusEl.innerHTML = `
-          <span class="agent-loader"><span></span><span></span><span></span></span>
-          Thinking... Elapsed: ${escapeHTML(elapsed)}. This can take 10+ minutes because premium research, tool use, reasoning, and source checking take longer.
-        `;
+        statusEl.innerHTML = `<span class="agent-loader"><span></span><span></span><span></span></span> Thinking... Elapsed: ${escapeHTML(elapsed)}. Deep tool-using responses can take 10+ minutes.`;
 
         const job = await supabaseRpc("get_ai_job", {
           p_job_id: jobId,
@@ -421,23 +343,27 @@ async function pollSupabaseJob({ jobId, visitorId, sessionId, statusEl, resultEl
           p_session_id: sessionId
         });
 
-        if(!job || job.found === false){
-          throw new Error("The job could not be found. Please try again.");
-        }
+        if(!job || job.found === false) throw new Error("The job could not be found. Please try again.");
+
+        updateDebug({
+          jobId,
+          status: job.status,
+          turnNumber,
+          updatedAt: job.updated_at,
+          processingStartedAt: job.processing_started_at,
+          completedAt: job.completed_at
+        });
+
+        updateLastAgentConversationTurn({ id: jobId, status: job.status });
 
         if(job.status === "completed"){
           const finalText = parseWebhookReply(job.response || "");
 
           if(isAcceptedOnly(finalText)){
-            statusEl.className = "agent-status bad";
-            statusEl.textContent = "Make.com returned only “Accepted” instead of the final AI response. This did not count as a completed demo turn. Please re-enter your prompt.";
+            setStatus(statusEl, "bad", "Make.com returned only “Accepted” instead of the final AI response. This did not count as a completed demo turn.");
             resultEl.style.display = "block";
             resultEl.innerHTML = renderMarkdownSafe("**No completed AI answer was received.** Please submit your prompt again.");
-            updateLastAgentConversationTurn({
-              id: jobId,
-              status: "failed",
-              error: "Accepted response ignored."
-            });
+            updateLastAgentConversationTurn({ id: jobId, status: "failed", error: "Accepted response ignored." });
             buttonEl.disabled = false;
             buttonEl.textContent = "Run Free Premium AI Test";
             activeAgentPoll = null;
@@ -456,25 +382,22 @@ async function pollSupabaseJob({ jobId, visitorId, sessionId, statusEl, resultEl
 
           resultEl.style.display = "block";
           resultEl.innerHTML = renderMarkdownSafe(finalText);
-
           renderAgentThread();
 
           const usage = getAgentUsage();
 
           if(usage.completedTurns >= CONFIG.agentDemo.maxCompletedTurns){
-            statusEl.className = "agent-status good";
-            statusEl.textContent = CONFIG.agentDemo.usedMessage;
+            setStatus(statusEl, "good", CONFIG.agentDemo.usedMessage);
             buttonEl.disabled = true;
             buttonEl.textContent = "Premium Demo Complete";
             promptEl.disabled = true;
           }else{
-            statusEl.className = "agent-status good";
-            statusEl.textContent = "Premium AI response complete. You have one follow-up available — answer the AI’s clarifying question or ask for a deeper recommendation.";
+            setStatus(statusEl, "good", "Premium AI response complete. You have one follow-up available — answer the AI’s clarifying question or ask for a deeper recommendation.");
             buttonEl.disabled = false;
             buttonEl.textContent = "Send Follow-Up";
             promptEl.disabled = false;
             promptEl.value = "";
-            promptEl.placeholder = "Answer the AI’s clarifying question or ask one follow-up. Example: I run a local service business with 3 staff, 80 leads/month, and most time is lost in follow-up.";
+            promptEl.placeholder = "Answer the AI’s clarifying question or ask one follow-up.";
             promptEl.focus();
           }
 
@@ -485,15 +408,10 @@ async function pollSupabaseJob({ jobId, visitorId, sessionId, statusEl, resultEl
 
         if(job.status === "failed" || job.status === "expired"){
           const errorText = job.error || "The AI job failed before completion.";
-          statusEl.className = "agent-status bad";
-          statusEl.textContent = errorText;
+          setStatus(statusEl, "bad", errorText);
           resultEl.style.display = "block";
           resultEl.innerHTML = renderMarkdownSafe(`**The premium AI job did not complete.**\n\n${errorText}\n\nYour completed demo turn has not been counted. You can try again.`);
-          updateLastAgentConversationTurn({
-            id: jobId,
-            status: job.status,
-            error: errorText
-          });
+          updateLastAgentConversationTurn({ id: jobId, status: job.status, error: errorText });
           buttonEl.disabled = false;
           buttonEl.textContent = "Run Free Premium AI Test";
           activeAgentPoll = null;
@@ -505,27 +423,23 @@ async function pollSupabaseJob({ jobId, visitorId, sessionId, statusEl, resultEl
         activeAgentPoll = setTimeout(tick, delay);
       }catch(err){
         console.warn("Polling error:", err);
-
         if(attempt <= 5){
           delay = Math.min(maxDelay, Math.round(delay * 1.8));
           activeAgentPoll = setTimeout(tick, delay);
           return;
         }
-
         activeAgentPoll = null;
         buttonEl.disabled = false;
         buttonEl.textContent = "Run Free Premium AI Test";
         reject(err);
       }
     };
-
     tick();
   });
 }
 
 async function supabaseRpc(functionName, body){
   const url = `${CONFIG.supabase.url.replace(/\/$/,"")}/rest/v1/rpc/${encodeURIComponent(functionName)}`;
-
   const res = await fetch(url, {
     method: "POST",
     headers: {
@@ -540,60 +454,55 @@ async function supabaseRpc(functionName, body){
 
   if(!res.ok){
     let message = text;
-
     try{
       const parsed = JSON.parse(text);
       message = parsed.message || parsed.error || text;
     }catch(e){}
-
     throw new Error(message);
   }
 
   if(!text) return null;
+  try{ return JSON.parse(text); }catch(e){ return text; }
+}
 
-  try{
-    return JSON.parse(text);
-  }catch(e){
-    return text;
-  }
+function updateDebug(info){
+  const el = document.getElementById("agent-debug");
+  if(!el) return;
+  const rows = [];
+  if(info.jobId) rows.push(`Job: ${info.jobId}`);
+  if(info.status) rows.push(`Status: ${info.status}`);
+  if(info.turnNumber) rows.push(`Turn: ${info.turnNumber}`);
+  if(info.processingStartedAt) rows.push(`Started: ${new Date(info.processingStartedAt).toLocaleString()}`);
+  if(info.completedAt) rows.push(`Completed: ${new Date(info.completedAt).toLocaleString()}`);
+  if(info.updatedAt) rows.push(`Updated: ${new Date(info.updatedAt).toLocaleString()}`);
+  el.textContent = rows.join(" • ");
 }
 
 function refreshAgentDemoLockState(status, result, btn, promptEl){
   const usage = getAgentUsage();
-
   if(usage.completedTurns >= CONFIG.agentDemo.maxCompletedTurns){
     lockAgentDemo(status, result, btn, promptEl);
     return;
   }
-
   if(usage.completedTurns === 1){
-    status.className = "agent-status good";
-    status.textContent = "You have one follow-up available. Use it to answer a clarifying question or ask for a deeper recommendation.";
+    setStatus(status, "good", "You have one follow-up available. Use it to answer a clarifying question or ask for a deeper recommendation.");
     btn.textContent = "Send Follow-Up";
   }
 }
 
 function lockAgentDemo(status, result, btn, promptEl){
-  status.className = "agent-status good";
-  status.textContent = CONFIG.agentDemo.usedMessage;
+  setStatus(status, "good", CONFIG.agentDemo.usedMessage);
   result.style.display = "block";
-  result.innerHTML = renderMarkdownSafe(
-    "**Next step:** Contact Flow Strategic AI to build a custom AI strategy engine, automation workflow, CRM system, support assistant, content engine, lead generation system, or Make.com automation around your exact business."
-  );
+  result.innerHTML = renderMarkdownSafe("**Next step:** Contact Flow Strategic AI to build a custom AI strategy engine, automation workflow, CRM system, support assistant, content engine, lead generation system, or Make.com automation around your exact business.");
   btn.disabled = true;
   btn.textContent = "Premium Demo Complete";
   promptEl.disabled = true;
 }
 
 function getAgentUsage(){
-  const defaults = {
-    completedTurns: 0,
-    lastUpdated: null
-  };
-
+  const defaults = { completedTurns: 0, lastUpdated: null };
   try{
     const stored = JSON.parse(localStorage.getItem(CONFIG.agentDemo.usageStorageKey) || "null");
-
     if(stored && typeof stored.completedTurns === "number"){
       return {
         completedTurns: Math.max(0, Math.min(CONFIG.agentDemo.maxCompletedTurns, stored.completedTurns)),
@@ -601,18 +510,12 @@ function getAgentUsage(){
       };
     }
   }catch(e){}
-
   const legacyUsed = localStorage.getItem(CONFIG.agentDemo.oneUseStorageKey) === "true";
-
   if(legacyUsed){
-    const migrated = {
-      completedTurns: 1,
-      lastUpdated: new Date().toISOString()
-    };
+    const migrated = { completedTurns: 1, lastUpdated: new Date().toISOString() };
     localStorage.setItem(CONFIG.agentDemo.usageStorageKey, JSON.stringify(migrated));
     return migrated;
   }
-
   return defaults;
 }
 
@@ -622,13 +525,8 @@ function incrementCompletedTurns(){
     completedTurns: Math.max(0, Math.min(CONFIG.agentDemo.maxCompletedTurns, usage.completedTurns + 1)),
     lastUpdated: new Date().toISOString()
   };
-
   localStorage.setItem(CONFIG.agentDemo.usageStorageKey, JSON.stringify(next));
-
-  if(next.completedTurns >= 1){
-    localStorage.setItem(CONFIG.agentDemo.oneUseStorageKey, "true");
-  }
-
+  if(next.completedTurns >= 1) localStorage.setItem(CONFIG.agentDemo.oneUseStorageKey, "true");
   return next;
 }
 
@@ -636,9 +534,7 @@ function getAgentConversation(){
   try{
     const parsed = JSON.parse(sessionStorage.getItem(CONFIG.agentDemo.conversationStorageKey) || "[]");
     return Array.isArray(parsed) ? parsed : [];
-  }catch(e){
-    return [];
-  }
+  }catch(e){ return []; }
 }
 
 function saveAgentConversation(conversation){
@@ -654,39 +550,26 @@ function saveAgentConversationTurn(turn){
 
 function updateLastAgentConversationTurn(updates){
   const conversation = getAgentConversation();
-
   if(conversation.length === 0) return;
-
-  conversation[conversation.length - 1] = {
-    ...conversation[conversation.length - 1],
-    ...updates
-  };
-
+  conversation[conversation.length - 1] = { ...conversation[conversation.length - 1], ...updates };
   saveAgentConversation(conversation);
   renderAgentThread();
 }
 
 function getPreviousAgentResponse(conversation){
   const completed = conversation.filter(item => item && item.status === "completed" && item.response);
-  if(completed.length === 0) return "";
-  return completed[completed.length - 1].response || "";
+  return completed.length ? completed[completed.length - 1].response || "" : "";
 }
 
 function restoreAgentConversation(){
   renderAgentThread();
 }
 
-function addAgentThreadTurn(){
-  renderAgentThread();
-}
-
 function renderAgentThread(){
   const thread = document.getElementById("agent-thread");
   if(!thread) return;
-
   const conversation = getAgentConversation();
   thread.innerHTML = "";
-
   conversation.forEach(turn => {
     const userHtml = escapeHTML(turn.prompt || "");
     const aiHtml = turn.status === "completed"
@@ -694,14 +577,13 @@ function renderAgentThread(){
       : turn.status === "failed" || turn.status === "expired"
         ? renderMarkdownSafe(`**Not completed:** ${turn.error || "The job failed."}`)
         : `<span class="agent-loader"><span></span><span></span><span></span></span> Thinking...`;
-
-    thread.insertAdjacentHTML("beforeend", `
-      <div class="agent-turn">
-        <div class="agent-turn-user">Turn ${escapeHTML(turn.turn_number || "")}: ${userHtml}</div>
-        <div class="agent-turn-ai">${aiHtml}</div>
-      </div>
-    `);
+    thread.insertAdjacentHTML("beforeend", `<div class="agent-turn"><div class="agent-turn-user">Turn ${escapeHTML(turn.turn_number || "")}: ${userHtml}</div><div class="agent-turn-ai">${aiHtml}</div></div>`);
   });
+}
+
+function setStatus(el, cls, text){
+  el.className = `agent-status ${cls || ""}`.trim();
+  el.textContent = text;
 }
 
 function isAcceptedOnly(value){
@@ -713,6 +595,7 @@ function isSupabaseMissing(){
     !CONFIG.supabase.url ||
     !CONFIG.supabase.anonKey ||
     CONFIG.supabase.url.includes("YOUR_SUPABASE") ||
+    CONFIG.supabase.anonKey.includes("PASTE_YOUR") ||
     CONFIG.supabase.anonKey.includes("YOUR_SUPABASE");
 }
 
@@ -722,21 +605,14 @@ function getSessionId(){
 
 function getOrCreateUUID(key){
   let existing = localStorage.getItem(key);
-
-  if(existing && isUuid(existing)){
-    return existing;
-  }
-
+  if(existing && isUuid(existing)) return existing;
   existing = crypto.randomUUID();
   localStorage.setItem(key, existing);
   return existing;
 }
 
 function cryptoRandomId(prefix){
-  if(window.crypto && typeof window.crypto.randomUUID === "function"){
-    return `${prefix}_${crypto.randomUUID()}`;
-  }
-
+  if(window.crypto && typeof window.crypto.randomUUID === "function") return `${prefix}_${crypto.randomUUID()}`;
   return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2)}`;
 }
 
@@ -757,10 +633,7 @@ function buildChat(){
   box.id = "fsai-chat-box";
   box.innerHTML = `
     <div class="fsai-header">
-      <div>
-        <div>${escapeHTML(CONFIG.chatbot.name)}</div>
-        <div class="status">Online</div>
-      </div>
+      <div><div>${escapeHTML(CONFIG.chatbot.name)}</div><div class="status">Online</div></div>
       <span class="fsai-close" onclick="closeChat()" aria-label="Close chat">×</span>
     </div>
     <div id="fsai-messages"></div>
@@ -781,7 +654,6 @@ function buildChat(){
   addMessage(CONFIG.chatbot.welcomeMessage, "bot-message");
 
   const sug = document.getElementById("fsai-suggestions");
-
   CONFIG.chatbot.suggestions.forEach(s => {
     const b = document.createElement("button");
     b.type = "button";
@@ -807,16 +679,9 @@ function closeChat(){
 function addMessage(text, cls){
   const m = document.getElementById("fsai-messages");
   if(!m) return;
-
   const d = document.createElement("div");
   d.className = cls;
-
-  if(cls === "bot-message"){
-    d.innerHTML = renderMarkdownSafe(text);
-  }else{
-    d.textContent = text;
-  }
-
+  d.innerHTML = cls === "bot-message" ? renderMarkdownSafe(text) : escapeHTML(text);
   m.appendChild(d);
   m.scrollTop = m.scrollHeight;
 }
@@ -824,7 +689,6 @@ function addMessage(text, cls){
 function showTyping(){
   const m = document.getElementById("fsai-messages");
   if(!m) return;
-
   const t = document.createElement("div");
   t.className = "typing";
   t.id = "typing";
@@ -842,7 +706,6 @@ async function sendMessage(){
   const input = document.getElementById("fsai-input");
   const sendBtn = document.getElementById("fsai-send");
   const msg = input.value.trim();
-
   if(!msg) return;
 
   const sug = document.getElementById("fsai-suggestions");
@@ -883,24 +746,16 @@ async function sendMessage(){
 
     clearTimeout(timeout);
     const raw = await res.text();
-
     if(!res.ok) throw new Error(`Webhook ${res.status}: ${raw}`);
 
     const reply = parseWebhookReply(raw);
-
     hideTyping();
     addMessage(reply || "Thanks — I received your message but could not generate a full reply. Please try again.", "bot-message");
   }catch(err){
     clearTimeout(timeout);
     hideTyping();
     console.error("FSAI chat error:", err);
-
-    addMessage(
-      err.name === "AbortError"
-        ? "The assistant is taking longer than usual. Please try again, or email " + CONFIG.email + "."
-        : "I'm having trouble connecting right now. Please email " + CONFIG.email + ".",
-      "bot-message"
-    );
+    addMessage(err.name === "AbortError" ? "The assistant is taking longer than usual. Please try again, or email " + CONFIG.email + "." : "I'm having trouble connecting right now. Please email " + CONFIG.email + ".", "bot-message");
   }finally{
     input.disabled = false;
     sendBtn.disabled = false;
@@ -911,12 +766,9 @@ async function sendMessage(){
 
 function parseWebhookReply(raw){
   if(raw == null) return "";
-
   const text = String(raw);
-
   try{
     const data = JSON.parse(text);
-
     if(typeof data === "string") return data;
     if(data.reply) return String(data.reply);
     if(data.response) return String(data.response);
@@ -925,7 +777,6 @@ function parseWebhookReply(raw){
     if(data.answer) return String(data.answer);
     if(data.output) return String(data.output);
     if(data.result) return String(data.result);
-
     return JSON.stringify(data, null, 2);
   }catch(e){
     return text;
@@ -934,32 +785,20 @@ function parseWebhookReply(raw){
 
 function renderMarkdownSafe(markdownText){
   const text = String(markdownText ?? "");
-
   if(window.marked && typeof window.marked.parse === "function"){
-    marked.setOptions({
-      breaks: true,
-      gfm: true
-    });
-
+    marked.setOptions({ breaks: true, gfm: true });
     const dirty = marked.parse(text);
-
     if(window.DOMPurify){
-      return DOMPurify.sanitize(dirty, {
-        ADD_ATTR: ["target", "rel"]
-      });
+      return DOMPurify.sanitize(dirty, { ADD_ATTR: ["target", "rel"] });
     }
-
     return dirty;
   }
-
   return escapeHTML(text).replace(/\n/g, "<br>");
 }
 
 function cleanErrorMessage(value){
   const text = String(value || "").trim();
-
   if(!text) return "Something went wrong. Please try again.";
-
   return text
     .replace(/^Error:\s*/i, "")
     .replace(/JSON object requested, multiple \(or no\) rows returned/gi, "A request is already running or could not be found.");

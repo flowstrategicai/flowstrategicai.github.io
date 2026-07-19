@@ -22,6 +22,7 @@ function injectBaseContent(){
 function renderStats(){
   const statsEl = document.getElementById("stats");
   statsEl.innerHTML = "";
+
   CONFIG.stats.forEach(s => {
     statsEl.insertAdjacentHTML("beforeend", `
       <div class="stat-box reveal">
@@ -44,7 +45,7 @@ function renderServices(){
     wrap.insertAdjacentHTML("beforeend", `
       <a class="card reveal" href="${service.href}" aria-label="${escapeHTML(service.title)}">
         <div class="card-top">
-          <span class="card-icon">${service.icon}</span>
+          <span class="card-icon">${escapeHTML(service.icon)}</span>
           <span class="card-impact">${escapeHTML(service.impact)}</span>
         </div>
         <h3>${escapeHTML(service.title)}</h3>
@@ -119,8 +120,8 @@ function renderContactCards(){
   contactData.forEach(x => {
     const target = x.h.startsWith("#") || x.h.startsWith("mailto:") ? "" : `target="_blank" rel="noopener"`;
     cg.insertAdjacentHTML("beforeend", `
-      <a class="contact-card reveal" href="${x.h}" ${target}>
-        <span class="ci">${x.i}</span>
+      <a class="contact-card reveal" href="${escapeAttribute(x.h)}" ${target}>
+        <span class="ci">${escapeHTML(x.i)}</span>
         <span class="cl">${escapeHTML(x.l)}</span>
         <span class="cv">${escapeHTML(x.v)}</span>
       </a>
@@ -130,6 +131,7 @@ function renderContactCards(){
 
 function initHeader(){
   const header = document.getElementById("header");
+
   window.addEventListener("scroll", () => {
     header.classList.toggle("scrolled", window.scrollY > 40);
   }, { passive:true });
@@ -169,6 +171,17 @@ function initReveal(){
     });
 }
 
+let SESSION_ID = sessionStorage.getItem("fsai_session_id");
+
+if(!SESSION_ID){
+  SESSION_ID = cryptoRandomId("session");
+  sessionStorage.setItem("fsai_session_id", SESSION_ID);
+}
+
+let activeAgentPoll = null;
+let activeAgentJobId = null;
+let activeAgentSubmit = false;
+
 function initAgentDemo(){
   if(!CONFIG.agentDemo.enabled) return;
 
@@ -178,48 +191,21 @@ function initAgentDemo(){
   const result = document.getElementById("agent-result");
   const suggestionsWrap = document.getElementById("agent-suggestions");
 
-  const maxMessages = Number(CONFIG.agentDemo.maxCompletedMessages || 2);
-  const countKey = CONFIG.agentDemo.completedCountStorageKey || "fsai_apex_agent_completed_message_count";
-  const historyKey = "fsai_apex_agent_demo_history";
-  const lastResponseKey = "fsai_apex_agent_last_response";
-
-  if(suggestionsWrap && Array.isArray(CONFIG.agentDemo.suggestions)){
-    suggestionsWrap.innerHTML = "";
-    CONFIG.agentDemo.suggestions.forEach(suggestion => {
-      const chip = document.createElement("button");
-      chip.type = "button";
-      chip.textContent = suggestion;
-      chip.addEventListener("click", () => {
-        promptEl.value = suggestion;
-        promptEl.focus();
-      });
-      suggestionsWrap.appendChild(chip);
-    });
-  }
-
-  const existingHistory = sessionStorage.getItem(historyKey);
-  if(existingHistory){
-    result.style.display = "block";
-    result.innerHTML = existingHistory;
-  }
-
-  const used = localStorage.getItem(CONFIG.agentDemo.oneUseStorageKey) === "true";
-  const completedCount = getCompletedAgentDemoCount(countKey);
-
-  if(used || completedCount >= maxMessages){
-    lockAgentDemo(status, result, btn);
-  }else if(completedCount > 0){
-    status.className = "agent-status good";
-    status.textContent = `First premium response complete. You have ${maxMessages - completedCount} follow-up message left. If the AI asked a clarifying question, answer it below.`;
-    btn.textContent = "Send Follow-Up";
-  }
+  restoreAgentConversation();
+  renderAgentSuggestions(suggestionsWrap, promptEl);
+  refreshAgentDemoLockState(status, result, btn, promptEl);
 
   btn.addEventListener("click", async () => {
-    const alreadyUsed = localStorage.getItem(CONFIG.agentDemo.oneUseStorageKey) === "true";
-    const currentCount = getCompletedAgentDemoCount(countKey);
+    if(activeAgentSubmit || activeAgentJobId){
+      status.className = "agent-status warn";
+      status.textContent = "A premium AI request is already running. Please wait for the current response.";
+      return;
+    }
 
-    if(alreadyUsed || currentCount >= maxMessages){
-      lockAgentDemo(status, result, btn);
+    const usage = getAgentUsage();
+
+    if(usage.completedTurns >= CONFIG.agentDemo.maxCompletedTurns){
+      lockAgentDemo(status, result, btn, promptEl);
       return;
     }
 
@@ -231,247 +217,528 @@ function initAgentDemo(){
       return;
     }
 
-    if(!CONFIG.agentDemo.webhook || CONFIG.agentDemo.webhook.includes("PASTE_YOUR")){
+    if(isSupabaseMissing()){
       status.className = "agent-status bad";
-      status.textContent = "Demo webhook is not connected yet.";
+      status.textContent = "Supabase is not configured yet. Add your Supabase URL and anon key in config.js.";
       return;
     }
 
-    btn.disabled = true;
-    btn.textContent = "Running premium analysis...";
-    status.className = "agent-status";
-    result.style.display = "block";
-
-    const startedAt = Date.now();
-
-    const updateStatus = () => {
-      const elapsedSeconds = Math.floor((Date.now() - startedAt) / 1000);
-      const mins = Math.floor(elapsedSeconds / 60);
-      const secs = elapsedSeconds % 60;
-      const elapsed = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
-
-      status.textContent = `The Apex Executive AI Strategy Engine is working. Elapsed: ${elapsed}. This can take up to or over 10 minutes because deeper research, reasoning, tool use, verification, and premium-quality analysis take longer. Please keep this tab open.`;
-    };
-
-    updateStatus();
-    const statusTimer = setInterval(updateStatus, 1000);
-
-    const previousAgentResponse = sessionStorage.getItem(lastResponseKey) || "";
-    const conversationHistoryText = stripHTMLToText(sessionStorage.getItem(historyKey) || "");
-
-    const payload = {
-      prompt,
-      message: prompt,
-      value: prompt,
-      user_context: "Website visitor using Flow Strategic AI two-message Apex Executive AI Strategy Engine premium demo.",
-      output_format: "Premium practical answer in Markdown with clear sections, prioritized recommendations, ROI logic, implementation steps, and next actions.",
-      research_mode: "Use tools aggressively when useful. Prioritize depth, accuracy, verification, and business value.",
-      conversation_id: getOrCreateId("fsai_agent_conversation", "conversation"),
-      session_id: getSessionId(),
-      visitor_id: getOrCreateId("fsai_visitor", "visitor"),
-      turn_number: String(currentCount + 1),
-      previous_agent_response: previousAgentResponse,
-      conversation_history: conversationHistoryText,
-      page_url: window.location.href,
-      user_agent: navigator.userAgent,
-      referrer: document.referrer,
-      timestamp: new Date().toISOString()
-    };
-
-    const AGENT_DEMO_TIMEOUT_MS = 660000;
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), AGENT_DEMO_TIMEOUT_MS);
-
-const supabase = window.supabase.createClient(
-
-    "glhoepoevinchtanikxo",
-
-    "sb_secret_fwvGnsqo7Yn6y3ZcAkEXpA__dY74xUz"
-
-);
-
-    try{
-      const start = await fetch(CONFIG.agentDemo.webhook, {
-
-    method: "POST",
-
-    headers: {
-
-        "Content-Type":"application/json"
-
-    },
-
-    body: JSON.stringify(payload)
-
-});
-
-const job = await start.json();
-
-const jobId = job.job_id;
-
-async function waitForJob(jobId){
-
-    const timeout = Date.now() + 300000;
-
-    while(Date.now() < timeout){
-
-        const { data, error } = await supabase
-
-            .from("ai_jobs")
-
-            .select("status,response,error")
-
-            .eq("id", jobId)
-
-            .single();
-
-        if(error){
-
-            throw error;
-
-        }
-
-        if(data.status === "completed"){
-
-            return data.response;
-
-        }
-
-        if(data.status === "failed"){
-
-            throw new Error(data.error);
-
-        }
-
-        await new Promise(r => setTimeout(r, 2000));
-
+    if(!CONFIG.agentDemo.makeAsyncWebhook || CONFIG.agentDemo.makeAsyncWebhook.includes("PASTE_YOUR")){
+      status.className = "agent-status bad";
+      status.textContent = "Make.com webhook is not connected yet. Add your Make.com webhook URL in config.js.";
+      return;
     }
 
-    throw new Error("Timed out.");
+    activeAgentSubmit = true;
+    btn.disabled = true;
+    btn.textContent = "Submitting...";
+    status.className = "agent-status";
+    result.style.display = "none";
+    result.innerHTML = "";
 
-}
+    const conversationId = getOrCreateUUID("fsai_agent_conversation_uuid");
+    const visitorId = getOrCreateUUID("fsai_visitor_uuid");
+    const sessionId = getSessionId();
+    const turnNumber = usage.completedTurns + 1;
+    const conversationHistory = getAgentConversation();
+    const previousAgentResponse = getPreviousAgentResponse(conversationHistory);
 
-const finalText = await waitForJob(jobId);
-      
+    addAgentThreadTurn({
+      prompt,
+      response: "",
+      status: "queued",
+      turn_number: turnNumber,
+      created_at: new Date().toISOString()
+    });
 
-      
+    saveAgentConversationTurn({
+      prompt,
+      response: "",
+      status: "queued",
+      turn_number: turnNumber,
+      created_at: new Date().toISOString()
+    });
 
-      clearTimeout(timeout);
-      clearInterval(statusTimer);
+    try{
+      const createdJob = await createSupabaseJob({
+        prompt,
+        conversation_id: conversationId,
+        visitor_id: visitorId,
+        session_id: sessionId,
+        turn_number: turnNumber
+      });
 
-      const raw = await res.text();
+      const jobId = createdJob.id;
 
-      if(!res.ok) throw new Error(`Webhook ${res.status}: ${raw}`);
+      activeAgentJobId = jobId;
 
-      const reply = parseWebhookReply(raw);
-      const finalText = reply || raw || "";
+      updateLastAgentConversationTurn({
+        id: jobId,
+        status: "queued"
+      });
 
-      if(isAcceptedPlaceholder(finalText)){
-        status.className = "agent-status bad";
-        status.textContent = "Make.com returned “Accepted” before the final AI response was available. This did not count as your premium test. Please re-enter your prompt and run it again. Keep this tab open until the final formatted answer appears.";
-        btn.disabled = false;
-        btn.textContent = currentCount > 0 ? "Send Follow-Up" : "Run Free Premium AI Test";
-        return;
-      }
-
-      if(!finalText.trim()){
-        status.className = "agent-status bad";
-        status.textContent = "No readable AI response was returned. This did not count as your premium test. Please try again.";
-        btn.disabled = false;
-        btn.textContent = currentCount > 0 ? "Send Follow-Up" : "Run Free Premium AI Test";
-        return;
-      }
-
-      const newCount = currentCount + 1;
-      localStorage.setItem(countKey, String(newCount));
-
-      const turnHTML = `
-        <div class="agent-turn">
-          <div class="agent-turn-label">Premium AI Response ${newCount}</div>
-          ${renderMarkdownSafe(finalText)}
-        </div>
+      status.className = "agent-status";
+      status.innerHTML = `
+        <span class="agent-loader"><span></span><span></span><span></span></span>
+        Thinking... The Apex Executive AI Strategy Engine is starting your premium research job.
       `;
 
-      const updatedHTML = (sessionStorage.getItem(historyKey) || "") + turnHTML;
-      sessionStorage.setItem(historyKey, updatedHTML);
-      sessionStorage.setItem(lastResponseKey, finalText);
+      triggerMakeAsync({
+        job_id: jobId,
+        prompt,
+        message: prompt,
+        value: prompt,
+        user_context: "Website visitor using Flow Strategic AI Apex Executive AI Strategy Engine premium two-turn demo.",
+        output_format: "Premium practical Markdown answer with clear sections, prioritized recommendations, ROI logic, implementation steps, and next actions.",
+        research_mode: "Use tools aggressively when useful. Prioritize depth, accuracy, source quality, and business value.",
+        conversation_id: conversationId,
+        session_id: sessionId,
+        visitor_id: visitorId,
+        turn_number: turnNumber,
+        previous_agent_response: previousAgentResponse,
+        conversation_history: JSON.stringify(conversationHistory, null, 2),
+        page_url: window.location.href,
+        user_agent: navigator.userAgent,
+        referrer: document.referrer,
+        timestamp: new Date().toISOString()
+      });
 
-      result.style.display = "block";
-      result.innerHTML = updatedHTML;
-      promptEl.value = "";
-
-      if(newCount >= maxMessages){
-        localStorage.setItem(CONFIG.agentDemo.oneUseStorageKey, "true");
-        status.className = "agent-status good";
-        status.textContent = "Premium AI demo complete. Want this level of analysis built into your business? Contact Flow Strategic AI below.";
-        btn.textContent = "Premium Demo Used";
-        btn.disabled = true;
-      }else{
-        status.className = "agent-status good";
-        status.textContent = `Premium response complete. You have ${maxMessages - newCount} follow-up message left. If the AI asked a clarifying question, answer it below.`;
-        btn.disabled = false;
-        btn.textContent = "Send Follow-Up";
-        promptEl.placeholder = "Answer the AI's clarifying question here, or ask one follow-up about the recommendation.";
-        promptEl.focus();
-      }
+      await pollSupabaseJob({
+        jobId,
+        visitorId,
+        sessionId,
+        statusEl: status,
+        resultEl: result,
+        buttonEl: btn,
+        promptEl,
+        turnNumber,
+        startedAt: Date.now()
+      });
     }catch(err){
-      clearTimeout(timeout);
-      clearInterval(statusTimer);
-
-      console.error("Apex Executive AI Strategy Engine demo error:", err);
+      console.error("Apex Executive AI Strategy Engine submit error:", err);
 
       status.className = "agent-status bad";
-      status.textContent = err.name === "AbortError"
-        ? "The AI system reached the maximum live demo processing window before a final response was returned. Your free test has not been used. You can try again with a narrower prompt or contact Flow Strategic AI for a full premium implementation."
-        : "The demo could not connect right now. Your free test has not been used. Please try again or contact Flow Strategic AI.";
+      status.textContent = cleanErrorMessage(err.message || "The demo could not start. Your free turn has not been used. Please try again.");
+
+      updateLastAgentConversationTurn({
+        status: "failed",
+        error: status.textContent
+      });
 
       btn.disabled = false;
-      btn.textContent = currentCount > 0 ? "Send Follow-Up" : "Run Free Premium AI Test";
+      btn.textContent = "Run Free Premium AI Test";
+    }finally{
+      activeAgentSubmit = false;
+      activeAgentJobId = null;
     }
   });
 }
 
-function getCompletedAgentDemoCount(countKey){
-  const n = Number(localStorage.getItem(countKey) || "0");
-  return Number.isFinite(n) && n > 0 ? n : 0;
+function renderAgentSuggestions(suggestionsWrap, promptEl){
+  if(!suggestionsWrap || !Array.isArray(CONFIG.agentDemo.suggestions)) return;
+
+  suggestionsWrap.innerHTML = "";
+
+  CONFIG.agentDemo.suggestions.forEach(suggestion => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.textContent = suggestion;
+    chip.addEventListener("click", () => {
+      promptEl.value = suggestion;
+      promptEl.focus();
+    });
+    suggestionsWrap.appendChild(chip);
+  });
 }
 
-function isAcceptedPlaceholder(value){
-  const text = String(value || "").trim().toLowerCase();
-  return text === "accepted" || text === "accepted." || text === "{\"accepted\":true}" || text === "202 accepted";
+async function createSupabaseJob(payload){
+  const data = await supabaseRpc("create_ai_job", {
+    p_prompt: payload.prompt,
+    p_conversation_id: payload.conversation_id,
+    p_visitor_id: payload.visitor_id,
+    p_session_id: payload.session_id,
+    p_turn_number: payload.turn_number
+  });
+
+  if(!data || !data.id){
+    throw new Error("Supabase did not return a job ID.");
+  }
+
+  return data;
 }
 
-function lockAgentDemo(status, result, btn){
+function triggerMakeAsync(payload){
+  fetch(CONFIG.agentDemo.makeAsyncWebhook, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload),
+    keepalive: false
+  }).catch(err => {
+    console.warn("Make webhook trigger did not return cleanly. This does not stop polling if Make received the job.", err);
+  });
+}
+
+async function pollSupabaseJob({ jobId, visitorId, sessionId, statusEl, resultEl, buttonEl, promptEl, turnNumber, startedAt }){
+  if(activeAgentPoll) clearTimeout(activeAgentPoll);
+
+  let attempt = 0;
+  let delay = 1400;
+  const maxDelay = 15000;
+  const maxWait = CONFIG.agentDemo.maxLiveWaitMs || 900000;
+
+  return new Promise((resolve, reject) => {
+    const tick = async () => {
+      attempt += 1;
+
+      try{
+        if(Date.now() - startedAt > maxWait){
+          activeAgentPoll = null;
+          buttonEl.disabled = false;
+          buttonEl.textContent = "Run Free Premium AI Test";
+          reject(new Error("The premium AI job exceeded the live browser waiting window. Your completed turn has not been counted. Please try a narrower prompt or contact Flow Strategic AI."));
+          return;
+        }
+
+        const elapsedSeconds = Math.floor((Date.now() - startedAt) / 1000);
+        const mins = Math.floor(elapsedSeconds / 60);
+        const secs = elapsedSeconds % 60;
+        const elapsed = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+
+        statusEl.className = "agent-status";
+        statusEl.innerHTML = `
+          <span class="agent-loader"><span></span><span></span><span></span></span>
+          Thinking... Elapsed: ${escapeHTML(elapsed)}. This can take 10+ minutes because premium research, tool use, reasoning, and source checking take longer.
+        `;
+
+        const job = await supabaseRpc("get_ai_job", {
+          p_job_id: jobId,
+          p_visitor_id: visitorId,
+          p_session_id: sessionId
+        });
+
+        if(!job || job.found === false){
+          throw new Error("The job could not be found. Please try again.");
+        }
+
+        if(job.status === "completed"){
+          const finalText = parseWebhookReply(job.response || "");
+
+          if(isAcceptedOnly(finalText)){
+            statusEl.className = "agent-status bad";
+            statusEl.textContent = "Make.com returned only “Accepted” instead of the final AI response. This did not count as a completed demo turn. Please re-enter your prompt.";
+            resultEl.style.display = "block";
+            resultEl.innerHTML = renderMarkdownSafe("**No completed AI answer was received.** Please submit your prompt again.");
+            updateLastAgentConversationTurn({
+              id: jobId,
+              status: "failed",
+              error: "Accepted response ignored."
+            });
+            buttonEl.disabled = false;
+            buttonEl.textContent = "Run Free Premium AI Test";
+            activeAgentPoll = null;
+            resolve(job);
+            return;
+          }
+
+          updateLastAgentConversationTurn({
+            id: jobId,
+            response: finalText,
+            status: "completed",
+            completed_at: job.completed_at || new Date().toISOString()
+          });
+
+          incrementCompletedTurns();
+
+          resultEl.style.display = "block";
+          resultEl.innerHTML = renderMarkdownSafe(finalText);
+
+          renderAgentThread();
+
+          const usage = getAgentUsage();
+
+          if(usage.completedTurns >= CONFIG.agentDemo.maxCompletedTurns){
+            statusEl.className = "agent-status good";
+            statusEl.textContent = CONFIG.agentDemo.usedMessage;
+            buttonEl.disabled = true;
+            buttonEl.textContent = "Premium Demo Complete";
+            promptEl.disabled = true;
+          }else{
+            statusEl.className = "agent-status good";
+            statusEl.textContent = "Premium AI response complete. You have one follow-up available — answer the AI’s clarifying question or ask for a deeper recommendation.";
+            buttonEl.disabled = false;
+            buttonEl.textContent = "Send Follow-Up";
+            promptEl.disabled = false;
+            promptEl.value = "";
+            promptEl.placeholder = "Answer the AI’s clarifying question or ask one follow-up. Example: I run a local service business with 3 staff, 80 leads/month, and most time is lost in follow-up.";
+            promptEl.focus();
+          }
+
+          activeAgentPoll = null;
+          resolve(job);
+          return;
+        }
+
+        if(job.status === "failed" || job.status === "expired"){
+          const errorText = job.error || "The AI job failed before completion.";
+          statusEl.className = "agent-status bad";
+          statusEl.textContent = errorText;
+          resultEl.style.display = "block";
+          resultEl.innerHTML = renderMarkdownSafe(`**The premium AI job did not complete.**\n\n${errorText}\n\nYour completed demo turn has not been counted. You can try again.`);
+          updateLastAgentConversationTurn({
+            id: jobId,
+            status: job.status,
+            error: errorText
+          });
+          buttonEl.disabled = false;
+          buttonEl.textContent = "Run Free Premium AI Test";
+          activeAgentPoll = null;
+          resolve(job);
+          return;
+        }
+
+        delay = Math.min(maxDelay, Math.round(delay * 1.28));
+        activeAgentPoll = setTimeout(tick, delay);
+      }catch(err){
+        console.warn("Polling error:", err);
+
+        if(attempt <= 5){
+          delay = Math.min(maxDelay, Math.round(delay * 1.8));
+          activeAgentPoll = setTimeout(tick, delay);
+          return;
+        }
+
+        activeAgentPoll = null;
+        buttonEl.disabled = false;
+        buttonEl.textContent = "Run Free Premium AI Test";
+        reject(err);
+      }
+    };
+
+    tick();
+  });
+}
+
+async function supabaseRpc(functionName, body){
+  const url = `${CONFIG.supabase.url.replace(/\/$/,"")}/rest/v1/rpc/${encodeURIComponent(functionName)}`;
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "apikey": CONFIG.supabase.anonKey,
+      "Authorization": `Bearer ${CONFIG.supabase.anonKey}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
+
+  const text = await res.text();
+
+  if(!res.ok){
+    let message = text;
+
+    try{
+      const parsed = JSON.parse(text);
+      message = parsed.message || parsed.error || text;
+    }catch(e){}
+
+    throw new Error(message);
+  }
+
+  if(!text) return null;
+
+  try{
+    return JSON.parse(text);
+  }catch(e){
+    return text;
+  }
+}
+
+function refreshAgentDemoLockState(status, result, btn, promptEl){
+  const usage = getAgentUsage();
+
+  if(usage.completedTurns >= CONFIG.agentDemo.maxCompletedTurns){
+    lockAgentDemo(status, result, btn, promptEl);
+    return;
+  }
+
+  if(usage.completedTurns === 1){
+    status.className = "agent-status good";
+    status.textContent = "You have one follow-up available. Use it to answer a clarifying question or ask for a deeper recommendation.";
+    btn.textContent = "Send Follow-Up";
+  }
+}
+
+function lockAgentDemo(status, result, btn, promptEl){
   status.className = "agent-status good";
   status.textContent = CONFIG.agentDemo.usedMessage;
   result.style.display = "block";
-
-  const existingHistory = sessionStorage.getItem("fsai_apex_agent_demo_history");
-  if(existingHistory){
-    result.innerHTML = existingHistory;
-  }else{
-    result.innerHTML = renderMarkdownSafe(
-      "**Next step:** Contact Flow Strategic AI to build a custom AI strategy engine, automation workflow, CRM system, support assistant, content engine, lead generation system, dashboard, API integration, or Make.com automation around your exact business."
-    );
-  }
-
+  result.innerHTML = renderMarkdownSafe(
+    "**Next step:** Contact Flow Strategic AI to build a custom AI strategy engine, automation workflow, CRM system, support assistant, content engine, lead generation system, or Make.com automation around your exact business."
+  );
   btn.disabled = true;
-  btn.textContent = "Premium Demo Used";
+  btn.textContent = "Premium Demo Complete";
+  promptEl.disabled = true;
 }
 
-let SESSION_ID = "session_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+function getAgentUsage(){
+  const defaults = {
+    completedTurns: 0,
+    lastUpdated: null
+  };
+
+  try{
+    const stored = JSON.parse(localStorage.getItem(CONFIG.agentDemo.usageStorageKey) || "null");
+
+    if(stored && typeof stored.completedTurns === "number"){
+      return {
+        completedTurns: Math.max(0, Math.min(CONFIG.agentDemo.maxCompletedTurns, stored.completedTurns)),
+        lastUpdated: stored.lastUpdated || null
+      };
+    }
+  }catch(e){}
+
+  const legacyUsed = localStorage.getItem(CONFIG.agentDemo.oneUseStorageKey) === "true";
+
+  if(legacyUsed){
+    const migrated = {
+      completedTurns: 1,
+      lastUpdated: new Date().toISOString()
+    };
+    localStorage.setItem(CONFIG.agentDemo.usageStorageKey, JSON.stringify(migrated));
+    return migrated;
+  }
+
+  return defaults;
+}
+
+function incrementCompletedTurns(){
+  const usage = getAgentUsage();
+  const next = {
+    completedTurns: Math.max(0, Math.min(CONFIG.agentDemo.maxCompletedTurns, usage.completedTurns + 1)),
+    lastUpdated: new Date().toISOString()
+  };
+
+  localStorage.setItem(CONFIG.agentDemo.usageStorageKey, JSON.stringify(next));
+
+  if(next.completedTurns >= 1){
+    localStorage.setItem(CONFIG.agentDemo.oneUseStorageKey, "true");
+  }
+
+  return next;
+}
+
+function getAgentConversation(){
+  try{
+    const parsed = JSON.parse(sessionStorage.getItem(CONFIG.agentDemo.conversationStorageKey) || "[]");
+    return Array.isArray(parsed) ? parsed : [];
+  }catch(e){
+    return [];
+  }
+}
+
+function saveAgentConversation(conversation){
+  sessionStorage.setItem(CONFIG.agentDemo.conversationStorageKey, JSON.stringify(conversation));
+}
+
+function saveAgentConversationTurn(turn){
+  const conversation = getAgentConversation();
+  conversation.push(turn);
+  saveAgentConversation(conversation);
+  renderAgentThread();
+}
+
+function updateLastAgentConversationTurn(updates){
+  const conversation = getAgentConversation();
+
+  if(conversation.length === 0) return;
+
+  conversation[conversation.length - 1] = {
+    ...conversation[conversation.length - 1],
+    ...updates
+  };
+
+  saveAgentConversation(conversation);
+  renderAgentThread();
+}
+
+function getPreviousAgentResponse(conversation){
+  const completed = conversation.filter(item => item && item.status === "completed" && item.response);
+  if(completed.length === 0) return "";
+  return completed[completed.length - 1].response || "";
+}
+
+function restoreAgentConversation(){
+  renderAgentThread();
+}
+
+function addAgentThreadTurn(){
+  renderAgentThread();
+}
+
+function renderAgentThread(){
+  const thread = document.getElementById("agent-thread");
+  if(!thread) return;
+
+  const conversation = getAgentConversation();
+  thread.innerHTML = "";
+
+  conversation.forEach(turn => {
+    const userHtml = escapeHTML(turn.prompt || "");
+    const aiHtml = turn.status === "completed"
+      ? renderMarkdownSafe(turn.response || "")
+      : turn.status === "failed" || turn.status === "expired"
+        ? renderMarkdownSafe(`**Not completed:** ${turn.error || "The job failed."}`)
+        : `<span class="agent-loader"><span></span><span></span><span></span></span> Thinking...`;
+
+    thread.insertAdjacentHTML("beforeend", `
+      <div class="agent-turn">
+        <div class="agent-turn-user">Turn ${escapeHTML(turn.turn_number || "")}: ${userHtml}</div>
+        <div class="agent-turn-ai">${aiHtml}</div>
+      </div>
+    `);
+  });
+}
+
+function isAcceptedOnly(value){
+  return String(value || "").trim().toLowerCase() === "accepted";
+}
+
+function isSupabaseMissing(){
+  return !CONFIG.supabase ||
+    !CONFIG.supabase.url ||
+    !CONFIG.supabase.anonKey ||
+    CONFIG.supabase.url.includes("YOUR_SUPABASE") ||
+    CONFIG.supabase.anonKey.includes("YOUR_SUPABASE");
+}
 
 function getSessionId(){
   return SESSION_ID;
 }
 
-function getOrCreateId(key, prefix){
+function getOrCreateUUID(key){
   let existing = localStorage.getItem(key);
-  if(!existing){
-    existing = prefix + "_" + Date.now() + "_" + Math.random().toString(36).slice(2);
-    localStorage.setItem(key, existing);
+
+  if(existing && isUuid(existing)){
+    return existing;
   }
+
+  existing = crypto.randomUUID();
+  localStorage.setItem(key, existing);
   return existing;
+}
+
+function cryptoRandomId(prefix){
+  if(window.crypto && typeof window.crypto.randomUUID === "function"){
+    return `${prefix}_${crypto.randomUUID()}`;
+  }
+
+  return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+}
+
+function isUuid(value){
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(value));
 }
 
 function buildChat(){
@@ -511,6 +778,7 @@ function buildChat(){
   addMessage(CONFIG.chatbot.welcomeMessage, "bot-message");
 
   const sug = document.getElementById("fsai-suggestions");
+
   CONFIG.chatbot.suggestions.forEach(s => {
     const b = document.createElement("button");
     b.type = "button";
@@ -587,7 +855,7 @@ async function sendMessage(){
   const payload = {
     channel: "website_chat",
     session_id: getSessionId(),
-    visitor_id: getOrCreateId("fsai_visitor", "visitor"),
+    visitor_id: getOrCreateUUID("fsai_visitor_uuid"),
     name: "",
     email: "",
     message: msg,
@@ -684,10 +952,14 @@ function renderMarkdownSafe(markdownText){
   return escapeHTML(text).replace(/\n/g, "<br>");
 }
 
-function stripHTMLToText(html){
-  const div = document.createElement("div");
-  div.innerHTML = html || "";
-  return (div.textContent || div.innerText || "").trim();
+function cleanErrorMessage(value){
+  const text = String(value || "").trim();
+
+  if(!text) return "Something went wrong. Please try again.";
+
+  return text
+    .replace(/^Error:\s*/i, "")
+    .replace(/JSON object requested, multiple \(or no\) rows returned/gi, "A request is already running or could not be found.");
 }
 
 function escapeHTML(value){
@@ -697,4 +969,8 @@ function escapeHTML(value){
     .replaceAll(">","&gt;")
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
+}
+
+function escapeAttribute(value){
+  return escapeHTML(value).replaceAll("`", "&#096;");
 }

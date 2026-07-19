@@ -178,6 +178,11 @@ function initAgentDemo(){
   const result = document.getElementById("agent-result");
   const suggestionsWrap = document.getElementById("agent-suggestions");
 
+  const maxMessages = Number(CONFIG.agentDemo.maxCompletedMessages || 2);
+  const countKey = CONFIG.agentDemo.completedCountStorageKey || "fsai_apex_agent_completed_message_count";
+  const historyKey = "fsai_apex_agent_demo_history";
+  const lastResponseKey = "fsai_apex_agent_last_response";
+
   if(suggestionsWrap && Array.isArray(CONFIG.agentDemo.suggestions)){
     suggestionsWrap.innerHTML = "";
     CONFIG.agentDemo.suggestions.forEach(suggestion => {
@@ -192,16 +197,28 @@ function initAgentDemo(){
     });
   }
 
-  const used = localStorage.getItem(CONFIG.agentDemo.oneUseStorageKey) === "true";
+  const existingHistory = sessionStorage.getItem(historyKey);
+  if(existingHistory){
+    result.style.display = "block";
+    result.innerHTML = existingHistory;
+  }
 
-  if(used){
+  const used = localStorage.getItem(CONFIG.agentDemo.oneUseStorageKey) === "true";
+  const completedCount = getCompletedAgentDemoCount(countKey);
+
+  if(used || completedCount >= maxMessages){
     lockAgentDemo(status, result, btn);
+  }else if(completedCount > 0){
+    status.className = "agent-status good";
+    status.textContent = `First premium response complete. You have ${maxMessages - completedCount} follow-up message left. If the AI asked a clarifying question, answer it below.`;
+    btn.textContent = "Send Follow-Up";
   }
 
   btn.addEventListener("click", async () => {
     const alreadyUsed = localStorage.getItem(CONFIG.agentDemo.oneUseStorageKey) === "true";
+    const currentCount = getCompletedAgentDemoCount(countKey);
 
-    if(alreadyUsed){
+    if(alreadyUsed || currentCount >= maxMessages){
       lockAgentDemo(status, result, btn);
       return;
     }
@@ -216,15 +233,14 @@ function initAgentDemo(){
 
     if(!CONFIG.agentDemo.webhook || CONFIG.agentDemo.webhook.includes("PASTE_YOUR")){
       status.className = "agent-status bad";
-      status.textContent = "Demo webhook is not connected yet. Paste your Make.com webhook URL into CONFIG.agentDemo.webhook in config.js.";
+      status.textContent = "Demo webhook is not connected yet.";
       return;
     }
 
     btn.disabled = true;
     btn.textContent = "Running premium analysis...";
     status.className = "agent-status";
-    result.style.display = "none";
-    result.innerHTML = "";
+    result.style.display = "block";
 
     const startedAt = Date.now();
 
@@ -234,22 +250,28 @@ function initAgentDemo(){
       const secs = elapsedSeconds % 60;
       const elapsed = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
 
-      status.textContent = `The Apex Executive AI Strategy Engine is working. Elapsed: ${elapsed}. This can take up to 10 minutes because deeper research, reasoning, tool use, and premium-quality analysis take longer. Please keep this tab open.`;
+      status.textContent = `The Apex Executive AI Strategy Engine is working. Elapsed: ${elapsed}. This can take up to or over 10 minutes because deeper research, reasoning, tool use, verification, and premium-quality analysis take longer. Please keep this tab open.`;
     };
 
     updateStatus();
     const statusTimer = setInterval(updateStatus, 1000);
 
+    const previousAgentResponse = sessionStorage.getItem(lastResponseKey) || "";
+    const conversationHistoryText = stripHTMLToText(sessionStorage.getItem(historyKey) || "");
+
     const payload = {
       prompt,
       message: prompt,
       value: prompt,
-      user_context: "Website visitor using Flow Strategic AI one-free-test Apex Executive AI Strategy Engine demo.",
-      output_format: "Premium practical answer in Markdown with clear sections, prioritized recommendations, and next steps.",
-      research_mode: "Use tools when useful. Prioritize depth, accuracy, and business value.",
+      user_context: "Website visitor using Flow Strategic AI two-message Apex Executive AI Strategy Engine premium demo.",
+      output_format: "Premium practical answer in Markdown with clear sections, prioritized recommendations, ROI logic, implementation steps, and next actions.",
+      research_mode: "Use tools aggressively when useful. Prioritize depth, accuracy, verification, and business value.",
       conversation_id: getOrCreateId("fsai_agent_conversation", "conversation"),
       session_id: getSessionId(),
       visitor_id: getOrCreateId("fsai_visitor", "visitor"),
+      turn_number: String(currentCount + 1),
+      previous_agent_response: previousAgentResponse,
+      conversation_history: conversationHistoryText,
       page_url: window.location.href,
       user_agent: navigator.userAgent,
       referrer: document.referrer,
@@ -276,18 +298,56 @@ function initAgentDemo(){
       if(!res.ok) throw new Error(`Webhook ${res.status}: ${raw}`);
 
       const reply = parseWebhookReply(raw);
-      const finalText = reply || raw || "The agent responded, but no readable text was returned.";
+      const finalText = reply || raw || "";
 
-      localStorage.setItem(CONFIG.agentDemo.oneUseStorageKey, "true");
+      if(isAcceptedPlaceholder(finalText)){
+        status.className = "agent-status bad";
+        status.textContent = "Make.com returned “Accepted” before the final AI response was available. This did not count as your premium test. Please re-enter your prompt and run it again. Keep this tab open until the final formatted answer appears.";
+        btn.disabled = false;
+        btn.textContent = currentCount > 0 ? "Send Follow-Up" : "Run Free Premium AI Test";
+        return;
+      }
 
-      status.className = "agent-status good";
-      status.textContent = "Premium AI test complete. Want this built into your business? Contact Flow Strategic AI below.";
+      if(!finalText.trim()){
+        status.className = "agent-status bad";
+        status.textContent = "No readable AI response was returned. This did not count as your premium test. Please try again.";
+        btn.disabled = false;
+        btn.textContent = currentCount > 0 ? "Send Follow-Up" : "Run Free Premium AI Test";
+        return;
+      }
+
+      const newCount = currentCount + 1;
+      localStorage.setItem(countKey, String(newCount));
+
+      const turnHTML = `
+        <div class="agent-turn">
+          <div class="agent-turn-label">Premium AI Response ${newCount}</div>
+          ${renderMarkdownSafe(finalText)}
+        </div>
+      `;
+
+      const updatedHTML = (sessionStorage.getItem(historyKey) || "") + turnHTML;
+      sessionStorage.setItem(historyKey, updatedHTML);
+      sessionStorage.setItem(lastResponseKey, finalText);
 
       result.style.display = "block";
-      result.innerHTML = renderMarkdownSafe(finalText);
+      result.innerHTML = updatedHTML;
+      promptEl.value = "";
 
-      btn.textContent = "Free Test Used";
-      btn.disabled = true;
+      if(newCount >= maxMessages){
+        localStorage.setItem(CONFIG.agentDemo.oneUseStorageKey, "true");
+        status.className = "agent-status good";
+        status.textContent = "Premium AI demo complete. Want this level of analysis built into your business? Contact Flow Strategic AI below.";
+        btn.textContent = "Premium Demo Used";
+        btn.disabled = true;
+      }else{
+        status.className = "agent-status good";
+        status.textContent = `Premium response complete. You have ${maxMessages - newCount} follow-up message left. If the AI asked a clarifying question, answer it below.`;
+        btn.disabled = false;
+        btn.textContent = "Send Follow-Up";
+        promptEl.placeholder = "Answer the AI's clarifying question here, or ask one follow-up about the recommendation.";
+        promptEl.focus();
+      }
     }catch(err){
       clearTimeout(timeout);
       clearInterval(statusTimer);
@@ -295,26 +355,42 @@ function initAgentDemo(){
       console.error("Apex Executive AI Strategy Engine demo error:", err);
 
       status.className = "agent-status bad";
-
       status.textContent = err.name === "AbortError"
         ? "The AI system reached the maximum live demo processing window before a final response was returned. Your free test has not been used. You can try again with a narrower prompt or contact Flow Strategic AI for a full premium implementation."
         : "The demo could not connect right now. Your free test has not been used. Please try again or contact Flow Strategic AI.";
 
       btn.disabled = false;
-      btn.textContent = "Run Free Premium AI Test";
+      btn.textContent = currentCount > 0 ? "Send Follow-Up" : "Run Free Premium AI Test";
     }
   });
+}
+
+function getCompletedAgentDemoCount(countKey){
+  const n = Number(localStorage.getItem(countKey) || "0");
+  return Number.isFinite(n) && n > 0 ? n : 0;
+}
+
+function isAcceptedPlaceholder(value){
+  const text = String(value || "").trim().toLowerCase();
+  return text === "accepted" || text === "accepted." || text === "{\"accepted\":true}" || text === "202 accepted";
 }
 
 function lockAgentDemo(status, result, btn){
   status.className = "agent-status good";
   status.textContent = CONFIG.agentDemo.usedMessage;
   result.style.display = "block";
-  result.innerHTML = renderMarkdownSafe(
-    "**Next step:** Contact Flow Strategic AI to build a custom AI strategy engine, automation workflow, CRM system, support assistant, content engine, lead generation system, or Make.com automation around your exact business."
-  );
+
+  const existingHistory = sessionStorage.getItem("fsai_apex_agent_demo_history");
+  if(existingHistory){
+    result.innerHTML = existingHistory;
+  }else{
+    result.innerHTML = renderMarkdownSafe(
+      "**Next step:** Contact Flow Strategic AI to build a custom AI strategy engine, automation workflow, CRM system, support assistant, content engine, lead generation system, dashboard, API integration, or Make.com automation around your exact business."
+    );
+  }
+
   btn.disabled = true;
-  btn.textContent = "Free Test Used";
+  btn.textContent = "Premium Demo Used";
 }
 
 let SESSION_ID = "session_" + Date.now() + "_" + Math.random().toString(36).slice(2);
@@ -458,7 +534,7 @@ async function sendMessage(){
   };
 
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 90000);
+  const timeout = setTimeout(() => controller.abort(), 120000);
 
   try{
     const res = await fetch(CONFIG.chatbot.webhook, {
@@ -540,6 +616,12 @@ function renderMarkdownSafe(markdownText){
   }
 
   return escapeHTML(text).replace(/\n/g, "<br>");
+}
+
+function stripHTMLToText(html){
+  const div = document.createElement("div");
+  div.innerHTML = html || "";
+  return (div.textContent || div.innerText || "").trim();
 }
 
 function escapeHTML(value){

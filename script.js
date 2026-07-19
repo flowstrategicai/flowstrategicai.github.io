@@ -282,13 +282,79 @@ function initAgentDemo(){
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), AGENT_DEMO_TIMEOUT_MS);
 
+const supabase = window.supabase.createClient(
+
+    "glhoepoevinchtanikxo",
+
+    "sb_secret_fwvGnsqo7Yn6y3ZcAkEXpA__dY74xUz"
+
+);
+
     try{
-      const res = await fetch(CONFIG.agentDemo.webhook, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-        signal: controller.signal
-      });
+      const start = await fetch(CONFIG.agentDemo.webhook, {
+
+    method: "POST",
+
+    headers: {
+
+        "Content-Type":"application/json"
+
+    },
+
+    body: JSON.stringify(payload)
+
+});
+
+const job = await start.json();
+
+const jobId = job.job_id;
+
+async function waitForJob(jobId){
+
+    const timeout = Date.now() + 300000;
+
+    while(Date.now() < timeout){
+
+        const { data, error } = await supabase
+
+            .from("ai_jobs")
+
+            .select("status,response,error")
+
+            .eq("id", jobId)
+
+            .single();
+
+        if(error){
+
+            throw error;
+
+        }
+
+        if(data.status === "completed"){
+
+            return data.response;
+
+        }
+
+        if(data.status === "failed"){
+
+            throw new Error(data.error);
+
+        }
+
+        await new Promise(r => setTimeout(r, 2000));
+
+    }
+
+    throw new Error("Timed out.");
+
+}
+
+const finalText = await waitForJob(jobId);
+      
+
+      
 
       clearTimeout(timeout);
       clearInterval(statusTimer);

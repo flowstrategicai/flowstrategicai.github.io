@@ -36,8 +36,10 @@ const CONFIG = {
 
   agentDemo: {
     enabled: true,
-    webhook: "https://hook.eu1.make.com/55rvue79y2omx1a8s8uu17dxp191ealz",
+    webhook: "https://hook.eu1.make.com/i7lfphh6kfqy5o22itl3hkkasnny5fqn",
     oneUseStorageKey: "fsai_universal_agent_free_test_used",
+    completedCountStorageKey: "fsai_apex_agent_completed_message_count",
+    maxCompletedMessages: 2,
     usedMessage: "Your free premium AI strategy test has already been used. Ready for a custom AI system? Contact Flow Strategic AI below and request an automation plan built around your business.",
     suggestions: [
       "What should I automate first for the highest ROI?",
@@ -195,29 +197,45 @@ const CONFIG = {
       icon: "🧩",
       impact: "Custom Build",
       title: "Custom AI Integrations & Automation Systems",
-      description: "If your workflow is unique, I can build the exact integration you need around your tools, CRM, forms, email, spreadsheets, AI models, webhooks, and APIs.",
+      description: "If your workflow is unique, I can build the exact integration you need around your tools, CRM, forms, email, spreadsheets, AI models, webhooks, dashboards, and APIs.",
       bullets: [
         "Custom Make.com integrations",
         "AI employees for repetitive workflows",
         "Internal tools and dashboards",
         "API-to-API automations",
-        "Automations designed around your business"
+        "Automations designed around your exact business"
       ],
       tags: ["Custom", "Make.com", "AI Agents", "APIs"],
       href: "#contact",
       cta: "Request a custom integration"
     },
     {
+      icon: "🏗️",
+      impact: "Custom Automation",
+      title: "Done-For-You Custom Automation Build",
+      description: "I build custom automation systems for businesses that want their tools connected, their repetitive work removed, and their operations running with less manual effort.",
+      bullets: [
+        "Business process automation audits",
+        "Custom workflows across your existing apps",
+        "Lead, sales, admin, support, and reporting automation",
+        "Make.com architecture, testing, and deployment",
+        "Systems designed for ROI, speed, and reliability"
+      ],
+      tags: ["Custom Automation", "Operations", "Make.com", "AI"],
+      href: "#contact",
+      cta: "Build my custom automation"
+    },
+    {
       icon: "🧪",
       impact: "Premium Demo",
       title: "Apex Executive AI Strategy Engine",
-      description: "A live premium portfolio demo powered by an autonomous AI research, strategy, and automation advisor built in Make.com. Test it once for free, then request a custom implementation for your business.",
+      description: "A live premium portfolio demo powered by an autonomous AI research, strategy, and automation advisor built in Make.com. Test it for up to two messages, then request a custom implementation for your business.",
       bullets: [
         "High-ROI automation opportunity analysis",
         "Business strategy, research, debugging, and workflow planning",
         "Premium Make.com AI Agent architecture",
         "Tool-using research and reasoning system",
-        "One free premium test on this site"
+        "Two-message premium test on this site"
       ],
       tags: ["Make.com", "AI Agent", "Research", "Strategy"],
       href: "#agent-demo",

@@ -11,8 +11,8 @@ const CONFIG = {
   email: "flowstrategicai@gmail.com",
 
   supabase: {
-    url: "https://YOUR_SUPABASE_PROJECT_REF.supabase.co",
-    anonKey: "YOUR_SUPABASE_ANON_KEY"
+    url: "https://glhoepoevinchtanikxo.supabase.co",
+    anonKey: "sb_secret_fwvGnsqo7Yn6y3ZcAkEXpA__dY74xUz"
   },
 
   socials: {
@@ -41,7 +41,7 @@ const CONFIG = {
 
   agentDemo: {
     enabled: true,
-    makeAsyncWebhook: "https://hook.eu1.make.com/w2z23nle79wfysy165ob5fvbrj253rre",
+    makeAsyncWebhook: "https://hook.eu1.make.com/nkyzvyn0hsp6k99qbdmkb9poqj6bsmnz",
     usageStorageKey: "fsai_apex_strategy_engine_usage_v2",
     oneUseStorageKey: "fsai_universal_agent_free_test_used",
     conversationStorageKey: "fsai_apex_strategy_engine_conversation_v2",

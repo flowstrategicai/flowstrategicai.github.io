@@ -12,7 +12,7 @@ const CONFIG = {
 
   supabase: {
     url: "https://glhoepoevinchtanikxo.supabase.co",
-    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdsaG9lcG9ldmluY2h0YW5pa3hvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0Mjc3NDMsImV4cCI6MjEwMDAwMzc0M30.XYWZQaesul058BwWf8xkQkyyAhSAlImJw6YYgqxcFuE"
+    anonKey: "PASTE_YOUR_SUPABASE_ANON_KEY"
   },
 
   socials: {
@@ -41,12 +41,14 @@ const CONFIG = {
 
   agentDemo: {
     enabled: true,
-    makeAsyncWebhook: "https://hook.eu1.make.com/d9myu1kuu5a0pj0wmnss3patnp1h7fbs",
+    makeAsyncWebhook: "https://hook.eu1.make.com/c69894i6f9lgwrgaiskk83mdwljhmmkv",
     usageStorageKey: "fsai_apex_strategy_engine_usage_v3",
     oneUseStorageKey: "fsai_universal_agent_free_test_used",
     conversationStorageKey: "fsai_apex_strategy_engine_conversation_v3",
     maxCompletedTurns: 2,
     maxLiveWaitMs: 900000,
+    pollInitialDelayMs: 1400,
+    pollMaxDelayMs: 15000,
     usedMessage: "Your free premium AI strategy demo is complete. Ready for a custom AI system? Contact Flow Strategic AI below and request an automation plan built around your business.",
     suggestions: [
       "What should I automate first for the highest ROI?",
@@ -55,6 +57,29 @@ const CONFIG = {
       "What AI systems should I build to grow my business?"
     ]
   },
+
+  apexValue: [
+    {
+      icon: "🧠",
+      title: "Deep AI Reasoning",
+      text: "The Apex Engine is designed for strategy, automation planning, debugging, research, sales systems, content systems, and operational decision support."
+    },
+    {
+      icon: "🔁",
+      title: "Async Reliability",
+      text: "The website does not wait for a webhook response. It creates a job, Make processes it in the background, and the browser polls Supabase until completion."
+    },
+    {
+      icon: "🛡️",
+      title: "Safer Response Writing",
+      text: "Make writes final answers through a Supabase RPC using base64 transport, avoiding broken JSON when AI output contains quotes, Markdown, tables, or code."
+    },
+    {
+      icon: "⚙️",
+      title: "Production Pattern",
+      text: "The same architecture can power customer support AI, lead generation agents, research engines, proposal systems, internal copilots, and CRM automation."
+    }
+  ],
 
   stats: [
     { number: "12+", label: "AI Systems Built" },
@@ -121,16 +146,113 @@ const CONFIG = {
       live: true
     },
     {
+      icon: "🧠",
+      impact: "Sales Ops",
+      title: "AI Lead Scoring & Qualification System",
+      description: "A lead qualification workflow that captures form submissions, analyzes answers, scores prospects, sends personalized replies, and updates CRM automatically.",
+      bullets: [
+        "Google Forms to Sheets automation",
+        "AI lead scoring and fit analysis",
+        "HOT / WARM / COLD classification",
+        "Personalized email auto-replies",
+        "Sales team alerts and CRM tracking"
+      ],
+      tags: ["Make.com", "Gemini", "Google Forms", "Sheets", "Gmail"],
+      href: "#contact",
+      cta: "Automate lead qualification"
+    },
+    {
+      icon: "📢",
+      impact: "Inbound Engine",
+      title: "Autonomous AI Content Engine",
+      description: "A multi-platform content automation system that researches trends, generates posts, creates captions and hooks, and supports consistent inbound marketing.",
+      bullets: [
+        "Trend research and signal mining",
+        "LinkedIn, Instagram, Facebook, and X content",
+        "AI image prompt generation",
+        "Content calendar creation",
+        "Scheduling and publishing workflows"
+      ],
+      tags: ["Make.com", "GPT", "DALL·E", "Social APIs"],
+      href: "#contact",
+      cta: "Build my content engine"
+    },
+    {
+      icon: "🔁",
+      impact: "Content Leverage",
+      title: "YouTube → LinkedIn Distribution System",
+      description: "A repurposing workflow that turns one long-form video into multiple professional LinkedIn posts using transcript extraction and AI content angles.",
+      bullets: [
+        "New YouTube upload detection",
+        "Transcript extraction",
+        "Multiple LinkedIn post angles",
+        "Content database storage",
+        "Scheduled distribution"
+      ],
+      tags: ["Make.com", "AI", "YouTube", "LinkedIn"],
+      href: "#contact",
+      cta: "Repurpose my videos"
+    },
+    {
+      icon: "📋",
+      impact: "CRM Backbone",
+      title: "CRM & Lead Capture Automation",
+      description: "A simple but powerful automation backbone for forms, registrations, lead capture, internal reporting, email replies, and clean spreadsheet CRM tracking.",
+      bullets: [
+        "Google Forms to Google Sheets",
+        "Automatic seller notifications",
+        "Auto email responses",
+        "Clean CRM logging",
+        "Follow-up workflow triggers"
+      ],
+      tags: ["Google Forms", "Sheets", "Gmail", "Make.com"],
+      href: "#contact",
+      cta: "Set up my CRM flow"
+    },
+    {
+      icon: "🛠️",
+      impact: "Rescue Sprint",
+      title: "Make.com Workflow Automation Build / Rescue",
+      description: "For businesses with broken, slow, messy, or incomplete workflows. I diagnose issues, rebuild logic, improve reliability, and make the automation production-ready.",
+      bullets: [
+        "Scenario debugging and repair",
+        "Webhook, router, filter, and mapping fixes",
+        "API and JSON troubleshooting",
+        "Error handling and logging",
+        "Cleaner, safer workflow architecture"
+      ],
+      tags: ["Make.com", "API", "Webhooks", "Debugging"],
+      href: "#contact",
+      cta: "Fix my automation"
+    },
+    {
+      icon: "🧩",
+      impact: "Custom Build",
+      title: "Custom AI Integrations & Automation Systems",
+      description: "If your workflow is unique, I can build the exact integration you need around your tools, CRM, forms, email, spreadsheets, AI models, webhooks, and APIs.",
+      bullets: [
+        "Custom Make.com integrations",
+        "AI employees for repetitive workflows",
+        "Internal tools and dashboards",
+        "API-to-API automations",
+        "Automations designed around your business",
+        "Custom automation built around your exact operations"
+      ],
+      tags: ["Custom", "Make.com", "AI Agents", "APIs"],
+      href: "#contact",
+      cta: "Request a custom integration"
+    },
+    {
       icon: "🧪",
       impact: "Premium Demo",
       title: "Apex Executive AI Strategy Engine",
-      description: "A live premium portfolio demo powered by an autonomous AI research, strategy, and automation advisor built in Make.com.",
+      description: "A live premium portfolio demo powered by an autonomous AI research, strategy, and automation advisor built in Make.com. Test it for up to two completed turns, then request a custom implementation for your business.",
       bullets: [
         "High-ROI automation opportunity analysis",
         "Business strategy, research, debugging, and workflow planning",
         "Premium Make.com AI Agent architecture",
         "Tool-using research and reasoning system",
-        "Two-turn premium demo"
+        "Two-turn premium demo for clarification and follow-up"
       ],
       tags: ["Make.com", "AI Agent", "Research", "Strategy"],
       href: "#agent-demo",

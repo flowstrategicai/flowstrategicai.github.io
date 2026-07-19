@@ -12,7 +12,7 @@ const CONFIG = {
 
   supabase: {
     url: "https://glhoepoevinchtanikxo.supabase.co",
-    anonKey: "PASTE_YOUR_SUPABASE_ANON_KEY"
+    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdsaG9lcG9ldmluY2h0YW5pa3hvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0Mjc3NDMsImV4cCI6MjEwMDAwMzc0M30.XYWZQaesul058BwWf8xkQkyyAhSAlImJw6YYgqxcFuE"
   },
 
   socials: {

@@ -34,9 +34,17 @@ const CONFIG = {
     ]
   },
 
+const supabase = window.supabase.createClient(
+
+    "glhoepoevinchtanikxo",
+
+    "sb_secret_fwvGnsqo7Yn6y3ZcAkEXpA__dY74xUz"
+
+);
+  
   agentDemo: {
     enabled: true,
-    webhook: "https://hook.eu1.make.com/i7lfphh6kfqy5o22itl3hkkasnny5fqn",
+    webhook: "https://hook.eu1.make.com/nkyzvyn0hsp6k99qbdmkb9poqj6bsmnz",
     oneUseStorageKey: "fsai_universal_agent_free_test_used",
     completedCountStorageKey: "fsai_apex_agent_completed_message_count",
     maxCompletedMessages: 2,

@@ -10,6 +10,11 @@ const CONFIG = {
 
   email: "flowstrategicai@gmail.com",
 
+  supabase: {
+    url: "https://YOUR_SUPABASE_PROJECT_REF.supabase.co",
+    anonKey: "YOUR_SUPABASE_ANON_KEY"
+  },
+
   socials: {
     whatsapp: "https://wa.me/254723025978",
     youtube: "https://www.youtube.com/@flowstrategicAI",
@@ -34,14 +39,15 @@ const CONFIG = {
     ]
   },
 
-  
   agentDemo: {
     enabled: true,
-    webhook: "https://hook.eu1.make.com/nkyzvyn0hsp6k99qbdmkb9poqj6bsmnz",
+    makeAsyncWebhook: "https://hook.eu1.make.com/w2z23nle79wfysy165ob5fvbrj253rre",
+    usageStorageKey: "fsai_apex_strategy_engine_usage_v2",
     oneUseStorageKey: "fsai_universal_agent_free_test_used",
-    completedCountStorageKey: "fsai_apex_agent_completed_message_count",
-    maxCompletedMessages: 2,
-    usedMessage: "Your free premium AI strategy test has already been used. Ready for a custom AI system? Contact Flow Strategic AI below and request an automation plan built around your business.",
+    conversationStorageKey: "fsai_apex_strategy_engine_conversation_v2",
+    maxCompletedTurns: 2,
+    maxLiveWaitMs: 900000,
+    usedMessage: "Your free premium AI strategy demo is complete. Ready for a custom AI system? Contact Flow Strategic AI below and request an automation plan built around your business.",
     suggestions: [
       "What should I automate first for the highest ROI?",
       "Where is my business losing the most time and money?",
@@ -58,10 +64,22 @@ const CONFIG = {
   ],
 
   demos: [
-    { id: "kKB_HY7aGY0", title: "🚀 Autonomous AI Lead Generation" },
-    { id: "YiVzjhvPb1c", title: "🧠 AI Lead Qualification System" },
-    { id: "szXMjJKdp0g", title: "📢 Autonomous AI Content Engine" },
-    { id: "D0PS_5BHlME", title: "🔁 YouTube → LinkedIn Distribution" }
+    {
+      id: "kKB_HY7aGY0",
+      title: "🚀 Autonomous AI Lead Generation"
+    },
+    {
+      id: "YiVzjhvPb1c",
+      title: "🧠 AI Lead Qualification System"
+    },
+    {
+      id: "szXMjJKdp0g",
+      title: "📢 Autonomous AI Content Engine"
+    },
+    {
+      id: "D0PS_5BHlME",
+      title: "🔁 YouTube → LinkedIn Distribution"
+    }
   ],
 
   services: [
@@ -198,45 +216,30 @@ const CONFIG = {
       icon: "🧩",
       impact: "Custom Build",
       title: "Custom AI Integrations & Automation Systems",
-      description: "If your workflow is unique, I can build the exact integration you need around your tools, CRM, forms, email, spreadsheets, AI models, webhooks, dashboards, and APIs.",
+      description: "If your workflow is unique, I can build the exact integration you need around your tools, CRM, forms, email, spreadsheets, AI models, webhooks, and APIs.",
       bullets: [
         "Custom Make.com integrations",
         "AI employees for repetitive workflows",
         "Internal tools and dashboards",
         "API-to-API automations",
-        "Automations designed around your exact business"
+        "Automations designed around your business",
+        "Custom automation built around your exact operations"
       ],
       tags: ["Custom", "Make.com", "AI Agents", "APIs"],
       href: "#contact",
       cta: "Request a custom integration"
     },
     {
-      icon: "🏗️",
-      impact: "Custom Automation",
-      title: "Done-For-You Custom Automation Build",
-      description: "I build custom automation systems for businesses that want their tools connected, their repetitive work removed, and their operations running with less manual effort.",
-      bullets: [
-        "Business process automation audits",
-        "Custom workflows across your existing apps",
-        "Lead, sales, admin, support, and reporting automation",
-        "Make.com architecture, testing, and deployment",
-        "Systems designed for ROI, speed, and reliability"
-      ],
-      tags: ["Custom Automation", "Operations", "Make.com", "AI"],
-      href: "#contact",
-      cta: "Build my custom automation"
-    },
-    {
       icon: "🧪",
       impact: "Premium Demo",
       title: "Apex Executive AI Strategy Engine",
-      description: "A live premium portfolio demo powered by an autonomous AI research, strategy, and automation advisor built in Make.com. Test it for up to two messages, then request a custom implementation for your business.",
+      description: "A live premium portfolio demo powered by an autonomous AI research, strategy, and automation advisor built in Make.com. Test it for up to two completed turns, then request a custom implementation for your business.",
       bullets: [
         "High-ROI automation opportunity analysis",
         "Business strategy, research, debugging, and workflow planning",
         "Premium Make.com AI Agent architecture",
         "Tool-using research and reasoning system",
-        "Two-message premium test on this site"
+        "Two-turn premium demo for clarification and follow-up"
       ],
       tags: ["Make.com", "AI Agent", "Research", "Strategy"],
       href: "#agent-demo",

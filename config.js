@@ -4,9 +4,9 @@ const CONFIG = {
   logo: "assets/logo.png",
 
   heroTitle: "Autonomous AI Systems That Run Your Business",
-  heroSubtitle: "I design AI agents and Make.com workflows that generate leads, qualify prospects, automate support, organize CRM data, create content, and scale operations with minimal human input.",
+  heroSubtitle: "I design AI agents and Make.com workflows that generate leads, qualify prospects, automate support, organize CRM data, create content, and scale operations with minimal human input. I build AI agents and Make.com automation systems for deep research, business analysis, lead generation, customer support, CRM automation, content operations, and custom workflow execution. The Apex demo shows how an AI system can investigate complex problems, reason through trade-offs, and return implementation-ready answers.",
 
-  aboutText: "Flow Strategic AI designs and builds autonomous AI systems for small businesses, coaches, teachers, creators, consultants, agencies, SaaS founders, local service businesses, and online entrepreneurs. The goal is simple: replace repetitive manual work with self-operating systems that generate consistent leads, respond faster, reduce errors, and create measurable business leverage.",
+  aboutText: "Flow Strategic AI designs and builds autonomous AI systems for small businesses, coaches, teachers, creators, consultants, agencies, SaaS founders, local service businesses, and online entrepreneurs. Flow Strategic AI designs and builds autonomous AI systems for small businesses, coaches, teachers, creators, consultants, agencies, SaaS founders, local service businesses, and online entrepreneurs. The focus is not shallow automation. The goal is to build research-capable, decision-supporting systems that save time, uncover better answers, reduce manual work, and create measurable business leverage. The goal is simple: replace repetitive manual work with self-operating systems that generate consistent leads, respond faster, reduce errors, and create measurable business leverage.",
 
   email: "flowstrategicai@gmail.com",
 
@@ -39,48 +39,114 @@ const CONFIG = {
     ]
   },
 
-  agentDemo: {
-    enabled: true,
-    makeAsyncWebhook: "https://hook.eu1.make.com/58lnbbttwe5awguegvc206b6wau1s31d",
-    usageStorageKey: "fsai_apex_strategy_engine_usage_v3",
-    oneUseStorageKey: "fsai_universal_agent_free_test_used",
-    conversationStorageKey: "fsai_apex_strategy_engine_conversation_v3",
-    maxCompletedTurns: 2,
-    maxLiveWaitMs: 900000,
-    pollInitialDelayMs: 1400,
-    pollMaxDelayMs: 15000,
-    usedMessage: "Your free premium AI strategy demo is complete. Ready for a custom AI system? Contact Flow Strategic AI below and request an automation plan built around your business.",
-    suggestions: [
-      "What should I automate first for the highest ROI?",
-      "Where is my business losing the most time and money?",
-      "How can I scale without hiring more people?",
-      "What AI systems should I build to grow my business?"
-    ]
+apexValue: [
+  {
+    icon: "🔍",
+    title: "Deep Research And Analysis",
+    text: "The Apex Engine is designed to investigate serious business, technical, strategy, automation, market, and operational questions with depth instead of giving shallow chatbot answers."
   },
+  {
+    icon: "🧠",
+    title: "Decision-Grade Answers",
+    text: "Strong outputs can include executive summaries, assumptions, evidence notes, ROI logic, risks, trade-offs, implementation steps, and next actions you can actually use."
+  },
+  {
+    icon: "🔁",
+    title: "Async Reliability",
+    text: "The website creates a Supabase job, Make.com processes it in the background, and the browser polls until completion, so longer research jobs can finish without relying on an open webhook response."
+  },
+  {
+    icon: "🛡️",
+    title: "Safer Response Writing",
+    text: "Make writes final Markdown answers through a Supabase RPC using base64 transport, avoiding broken JSON when the AI returns quotes, tables, code blocks, or long structured analysis."
+  },
+  {
+    icon: "⚙️",
+    title: "Production Pattern",
+    text: "This same architecture can power private research copilots, customer support AI, lead generation agents, proposal systems, CRM assistants, documentation tools, and internal strategy engines."
+  },
+  {
+    icon: "💰",
+    title: "Commercial Value",
+    text: "The value comes from saving research time, finding better decisions faster, avoiding poor automation builds, improving lead handling, and turning expertise into a repeatable AI-powered system."
+  },
+  {
+    icon: "🧩",
+    title: "Customizable For Clients",
+    text: "The backend can be rebuilt around a client’s tools, data, prompts, offers, SOPs, CRM, market, sales process, and internal workflows."
+  },
+  {
+    icon: "📈",
+    title: "Subscription Or DFY Build",
+    text: "After the free demo, you can sell continued access as a subscription or charge a premium done-for-you build fee for a private client-owned backend."
+  }
+],
 
-  apexValue: [
-    {
-      icon: "🧠",
-      title: "Deep AI Reasoning",
-      text: "The Apex Engine is designed for strategy, automation planning, debugging, research, sales systems, content systems, and operational decision support."
-    },
-    {
-      icon: "🔁",
-      title: "Async Reliability",
-      text: "The website does not wait for a webhook response. It creates a job, Make processes it in the background, and the browser polls Supabase until completion."
-    },
-    {
-      icon: "🛡️",
-      title: "Safer Response Writing",
-      text: "Make writes final answers through a Supabase RPC using base64 transport, avoiding broken JSON when AI output contains quotes, Markdown, tables, or code."
-    },
-    {
-      icon: "⚙️",
-      title: "Production Pattern",
-      text: "The same architecture can power customer support AI, lead generation agents, research engines, proposal systems, internal copilots, and CRM automation."
-    }
-  ],
+qualityProof: [
+  {
+    icon: "🔬",
+    title: "Multi-Source Research",
+    text: "The engine is designed to use search and research tools when they materially improve accuracy, freshness, source quality, and decision value."
+  },
+  {
+    icon: "⚖️",
+    title: "Review-Oriented Reasoning",
+    text: "For complex or high-value work, the system can use multi-model critique tools when available to identify gaps, contradictions, implementation risks, and weak assumptions."
+  },
+  {
+    icon: "📌",
+    title: "Traceable When Research Is Used",
+    text: "When research tools are used, important factual claims can be tied to source titles, domains, dates when available, and URLs."
+  },
+  {
+    icon: "💰",
+    title: "ROI-Focused Recommendations",
+    text: "Recommendations are tied to revenue growth, time saved, operational leverage, conversion improvement, or risk reduction."
+  },
+  {
+    icon: "🧩",
+    title: "Implementation-Ready Output",
+    text: "For technical builds, the system can produce schemas, mappings, workflow logic, validation checklists, and deployment steps."
+  },
+  {
+    icon: "🎯",
+    title: "Assumptions And Caveats",
+    text: "The agent is instructed to state assumptions, uncertainty, risks, confidence, and what would change the recommendation."
+  }
+],
 
+pricingPlans: [
+  {
+    tag: "Route 1 — Subscription",
+    title: "Managed Deep Research Access",
+    price: "Custom monthly access",
+    subtitle: "Use the Apex Executive AI Strategy Engine after the two free demo turns.",
+    bullets: [
+      "Ongoing deep research and strategy support",
+      "Business analysis, automation planning, and technical debugging",
+      "Useful for founders, consultants, operators, agencies, and teams",
+      "Best when you want recurring access without owning the backend",
+      "Pricing can be based on usage, access tier, or research credits"
+    ],
+    featured: false
+  },
+  {
+    tag: "Route 2 — Done-For-You Build",
+    title: "Own The Private Backend",
+    price: "Custom build quote",
+    subtitle: "Flow Strategic AI builds a private version around your business, tools, workflows, data, and prompts.",
+    bullets: [
+      "Client-owned Supabase backend",
+      "Client-owned Make.com scenario",
+      "Custom AI Agent prompt and workflow logic",
+      "Optional CRM, email, lead, support, or reporting integrations",
+      "Documentation, testing, deployment, and handover included"
+    ],
+    featured: true
+  }
+],
+
+  
   stats: [
     { number: "12+", label: "AI Systems Built" },
     { number: "30+", label: "Workflow Modules" },

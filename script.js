@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
   injectBaseContent();
   renderStats();
   renderApexValue();
+  renderQualityProof();
+  renderPricing();
   renderServices();
   renderVideos();
   renderCourse();
@@ -97,6 +99,34 @@ function renderContactCards(){
   contactData.forEach(x => {
     const target = x.h.startsWith("#") || x.h.startsWith("mailto:") ? "" : `target="_blank" rel="noopener"`;
     cg.insertAdjacentHTML("beforeend", `<a class="contact-card reveal" href="${escapeAttribute(x.h)}" ${target}><span class="ci">${escapeHTML(x.i)}</span><span class="cl">${escapeHTML(x.l)}</span><span class="cv">${escapeHTML(x.v)}</span></a>`);
+  });
+}
+
+  function renderQualityProof(){
+  const grid = document.getElementById("quality-grid");
+  if(!grid || !Array.isArray(CONFIG.qualityProof)) return;
+  grid.innerHTML = "";
+  CONFIG.qualityProof.forEach(item => {
+    grid.insertAdjacentHTML("beforeend", `<div class="quality-card reveal"><span class="qi">${escapeHTML(item.icon)}</span><h3>${escapeHTML(item.title)}</h3><p>${escapeHTML(item.text)}</p></div>`);
+  });
+}
+
+function renderPricing(){
+  const grid = document.getElementById("pricing-grid");
+  if(!grid || !Array.isArray(CONFIG.pricingPlans)) return;
+  grid.innerHTML = "";
+  CONFIG.pricingPlans.forEach(plan => {
+    const bullets = plan.bullets.map(b => `<li>${escapeHTML(b)}</li>`).join("");
+    grid.insertAdjacentHTML("beforeend", `
+      <div class="pricing-card reveal ${plan.featured ? "featured" : ""}">
+        <span class="pricing-tag">${escapeHTML(plan.tag)}</span>
+        <h3>${escapeHTML(plan.title)}</h3>
+        <div class="pricing-price">${escapeHTML(plan.price)}</div>
+        <p>${escapeHTML(plan.subtitle)}</p>
+        <ul>${bullets}</ul>
+        <a href="#contact" class="btn-primary">Discuss This Option</a>
+      </div>
+    `);
   });
 }
 
@@ -493,7 +523,32 @@ function refreshAgentDemoLockState(status, result, btn, promptEl){
 function lockAgentDemo(status, result, btn, promptEl){
   setStatus(status, "good", CONFIG.agentDemo.usedMessage);
   result.style.display = "block";
-  result.innerHTML = renderMarkdownSafe("**Next step:** Contact Flow Strategic AI to build a custom AI strategy engine, automation workflow, CRM system, support assistant, content engine, lead generation system, or Make.com automation around your exact business.");
+  result.innerHTML = renderMarkdownSafe(`
+## Your Free Deep Research Demo Is Complete
+
+You have used the two completed premium demo turns.
+
+### Continue In One Of Two Ways
+
+**1. Subscription Access**  
+Use the Apex Executive AI Strategy Engine for ongoing research, strategy, automation planning, business analysis, content planning, technical debugging, and decision support.
+
+**2. Done-For-You Private Automation Build**  
+Flow Strategic AI can build a private version of this backend for your business or your client. This can include your own Supabase database, Make.com scenario, AI Agent prompt, tools, workflows, CRM integrations, support logic, lead systems, and reporting.
+
+### Request A Quote
+
+Contact Flow Strategic AI and explain:
+
+- your business type,
+- what you want to automate,
+- your current tools,
+- where you lose the most time,
+- whether you want subscription access or a private build,
+- whether the system is for you or for a client.
+
+[Contact Flow Strategic AI](#contact)
+  `);
   btn.disabled = true;
   btn.textContent = "Premium Demo Complete";
   promptEl.disabled = true;

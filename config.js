@@ -41,7 +41,7 @@ const CONFIG = {
 
   agentDemo: {
     enabled: true,
-    makeAsyncWebhook: "https://hook.eu1.make.com/gzjtdm2lhkkaucbkmsh3n0bjhtcle9g8",
+    makeAsyncWebhook: "https://hook.eu1.make.com/n6h2frvlnti1ik3an4r3neyq2lvn8k89",
     usageStorageKey: "fsai_apex_strategy_engine_usage_v3",
     oneUseStorageKey: "fsai_universal_agent_free_test_used",
     conversationStorageKey: "fsai_apex_strategy_engine_conversation_v3",

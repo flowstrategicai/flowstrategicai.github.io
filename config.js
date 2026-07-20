@@ -12,7 +12,7 @@ const CONFIG = {
 
   supabase: {
     url: "https://glhoepoevinchtanikxo.supabase.co",
-    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdsaG9lcG9ldmluY2h0YW5pa3hvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0Mjc3NDMsImV4cCI6MjEwMDAwMzc0M30.XYWZQaesul058BwWf8xkQkyyAhSAlImJw6YYgqxcFuE"
+    anonKey: "sb_publishable_Wr_PAC1uuBOkZwdpHYNUYA_1-WONH_6"
   },
 
   socials: {
@@ -41,7 +41,7 @@ const CONFIG = {
 
   agentDemo: {
     enabled: true,
-    makeAsyncWebhook: "https://hook.eu1.make.com/c69894i6f9lgwrgaiskk83mdwljhmmkv",
+    makeAsyncWebhook: "https://hook.eu1.make.com/ehmvyo2vhwz52u9d58dsgjvgwe18pges",
     usageStorageKey: "fsai_apex_strategy_engine_usage_v3",
     oneUseStorageKey: "fsai_universal_agent_free_test_used",
     conversationStorageKey: "fsai_apex_strategy_engine_conversation_v3",

@@ -7,7 +7,14 @@ heroSubtitle:"I design AI agents and Make.com workflows that generate leads, qua
 aboutText:"I design and build autonomous AI systems for small businesses, coaches, teachers, creators, consultants, agencies, SaaS founders, local service businesses, and online entrepreneurs. The goal is simple: replace repetitive manual work with self-operating systems that generate consistent leads, respond faster, reduce errors, create content, organize operations, support customers, and create measurable business leverage.",
 email:"flowstrategicai@gmail.com",
 supabase:{url:"https://glhoepoevinchtanikxo.supabase.co",anonKey:"sb_publishable_Wr_PAC1uuBOkZwdpHYNUYA_1-WONH_6"},
-socials:{whatsapp:"https://wa.me/254723025978",youtube:"https://www.youtube.com/@flowstrategicAI",linkedin:"https://www.linkedin.com/in/flowstrategicai/",instagram:"https://www.instagram.com/flowstrategicai_official/",twitter:"https://x.com/flowstrategicai",facebook:"https://facebook.com/flowstrategicai",resources:"#resources"},
+socials:{
+  whatsapp:"https://wa.me/254723025978",
+  youtube:"https://www.youtube.com/@flowstrategicAI",
+  linkedin:"https://www.linkedin.com/in/flowstrategicai/",
+  instagram:"https://www.instagram.com/flowstrategicai_official/",
+  twitter:"https://x.com/flowstrategicai",
+  facebook:"https://www.facebook.com/profile.php?id=61564701885673",
+  resources:"#resources"},
 chatbot:{enabled:true,name:"FSAI Assistant",welcomeMessage:"👋 Welcome to Flow Strategic AI.\n\nI'm the FSAI Assistant. I can help you think through AI automation systems for lead generation, CRM, customer support, content creation, research, reporting, operations, outreach, and custom Make.com workflows.\n\nWhat would you like to automate, improve, or scale?",webhook:"https://hook.eu1.make.com/isxcfk1e4kvcxylykphp2hjpwe1w1f4v",suggestions:["Automate lead follow-up","Build a content engine","Improve customer support","Clean up my CRM","Find my best automation opportunity"]},
 agentDemo:{enabled:true,makeAsyncWebhook:"https://hook.eu1.make.com/3wobe7amoq6c8w5vmva0ahl1sz8vkto6",usageStorageKey:"fsai_apex_strategy_engine_usage_v4",oneUseStorageKey:"fsai_universal_agent_free_test_used",conversationStorageKey:"fsai_apex_strategy_engine_conversation_v4",maxCompletedTurns:2,maxLiveWaitMs:900000,pollInitialDelayMs:1400,pollMaxDelayMs:15000,usedMessage:"Your free premium AI strategy demo is complete. Ready for a custom AI system? Contact Flow Strategic AI below for a paid subscription, private automation strategy access, or a done-for-you backend automation build that your business owns.",suggestions:["What should I automate first for the highest ROI?","Research my market and identify my best automation opportunity.","Where is my business losing the most time and money?","How can I scale without hiring more people?","What AI systems should I build to grow my business?","Analyze my workflow and tell me what backend automation I could charge clients for."]},
 targetAudience:[
